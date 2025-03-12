@@ -1,0 +1,21 @@
+.dashboard-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .course-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .course-card {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    width: 280px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+  

@@ -1,0 +1,68 @@
+/* 🌟 Navbar Styling */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #007bff;
+    padding: 15px 40px;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease-in-out;
+}
+
+.nav-links a:hover {
+    color: #ddd;
+}
+
+/* 🌟 Account & Logout Styling */
+.account-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.account-dropdown .logout-btn {
+    background: white;
+    color: #007bff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.account-dropdown .logout-btn:hover {
+    background: #e0e0e0;
+}
+
+/* 🌟 Responsive Navbar */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

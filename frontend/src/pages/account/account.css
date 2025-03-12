@@ -1,0 +1,116 @@
+/* 🌟 Account Page Styling */
+.account-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+}
+
+/* 🌟 Profile Card */
+.profile-card {
+  background: white;
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: 0.3s ease-in-out;
+}
+
+.profile-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* 🌟 Profile Info */
+.profile-card h2 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.profile-card p {
+  font-size: 18px;
+  margin: 5px 0;
+  color: #555;
+}
+
+.profile-card strong {
+  font-weight: 600;
+  color: #222;
+}
+
+/* 🌟 Button Group */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* 🌟 Dashboard Button */
+.dashboard-btn {
+  background: linear-gradient(135deg, #6a0dad, #4b0082);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 8px rgba(106, 13, 173, 0.2);
+}
+
+.dashboard-btn:hover {
+  background: linear-gradient(135deg, #4b0082, #3a0066);
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(106, 13, 173, 0.3);
+}
+
+/* 🌟 Logout Button */
+.logout-btn {
+  background: linear-gradient(135deg, #ff4141, #cc0000);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 8px rgba(255, 65, 65, 0.2);
+}
+
+.logout-btn:hover {
+  background: linear-gradient(135deg, #cc0000, #990000);
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(255, 65, 65, 0.3);
+}
+
+/* 🌟 Responsive Design */
+@media (max-width: 768px) {
+  .profile-card {
+      padding: 20px;
+  }
+
+  .button-group {
+      flex-direction: column;
+  }
+
+  .dashboard-btn,
+  .logout-btn {
+      width: 100%;
+      justify-content: center;
+  }
+}

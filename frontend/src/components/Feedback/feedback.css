@@ -1,0 +1,127 @@
+/* General Feedback Form Styling */
+.feedback-form-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background: linear-gradient(135deg, #6e7ce0, #9e79e2);
+    border-radius: 10px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+  }
+  
+  /* Form Header */
+  .feedback-form-container h3 {
+    font-size: 32px;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  
+  .feedback-form-container p {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 20px;
+  }
+  
+  /* Input Fields Styling */
+  .feedback-form-container input,
+  .feedback-form-container textarea,
+  .feedback-form-container select {
+    width: 100%;
+    padding: 14px;
+    margin: 12px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f7f7f7;
+    color: #333;
+    transition: all 0.3s ease-in-out;
+    box-sizing: border-box;
+  }
+  
+  /* Focus Effect on Input */
+  .feedback-form-container input:focus,
+  .feedback-form-container textarea:focus,
+  .feedback-form-container select:focus {
+    border-color: #9e79e2;
+    outline: none;
+    box-shadow: 0 0 8px rgba(158, 121, 226, 0.5);
+  }
+  
+  /* Button Styling */
+  .feedback-form-container button {
+    width: 100%;
+    padding: 14px;
+    background-color: #9e79e2;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Button Hover Effect */
+  .feedback-form-container button:hover {
+    background-color: #6e7ce0;
+  }
+  
+  /* Success/Error Messages */
+  .success-message,
+  .error-message {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    margin-top: 20px;
+  }
+  
+  .success-message {
+    color: green;
+  }
+  
+  .error-message {
+    color: red;
+  }
+  
+  /* Form Fields */
+  .form-field {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .form-field label {
+    font-size: 16px;
+    color: #f7f7f7;
+    font-weight: 600;
+    flex: 0.35;
+    text-align: left;
+  }
+  
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    flex: 0.6;
+  }
+  
+  /* Mobile View */
+  @media (max-width: 768px) {
+    .feedback-form-container {
+      padding: 20px;
+    }
+    .feedback-form-container h3 {
+      font-size: 28px;
+    }
+    .feedback-form-container button {
+      font-size: 16px;
+    }
+  }
+  
