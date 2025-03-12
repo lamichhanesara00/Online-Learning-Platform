@@ -6,11 +6,12 @@ import userRoutes from "./routes/user.js";
 import courseRoutes from "./routes/course.js";
 import chatRoutes from "./routes/chat.js";
 import studentRoutes from "./routes/student.js";
-import feedbackRoutes from "./routes/feedback.js"; 
+import feedbackRoutes from "./routes/feedback.js"; // ✅ Ensure feedback is imported
 import adminRegisterRoutes from "./routes/register.js";
 import adminLoginRoutes from "./routes/login.js";
+import lectureRoutes from "./routes/lecture.js";
 
-dotenv.config(); // ✅ Load environment variables
+dotenv.config();
 
 const app = express();
 
@@ -21,8 +22,8 @@ app.use(cors({ origin: "*", methods: ["GET", "POST", "PUT", "DELETE"] }));
 
 // ✅ Connect to MongoDB
 connectDB().catch((error) => {
-    console.error(" MongoDB Connection Failed:", error);
-    process.exit(1); // Exit process if DB fails to connect
+  console.error("MongoDB Connection Failed:", error);
+  process.exit(1);
 });
 
 // ✅ Register API Routes
@@ -32,15 +33,16 @@ app.use("/api/admin/register", adminRegisterRoutes);
 app.use("/api/admin/login", adminLoginRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/student", studentRoutes);
-app.use("/api/course/:courseId/feedback", feedbackRoutes); // ✅ FIXED: Correct Route
+app.use("/api/feedback", feedbackRoutes); // ✅ FIXED: Correct route
+app.use("/api/admin", lectureRoutes);
 
 // ✅ Catch-all for unknown routes
 app.use((req, res) => {
-    res.status(404).json({ message: " Route Not Found" });
+  res.status(404).json({ message: "Route Not Found" });
 });
 
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(` Server running on: http://localhost:${PORT}`);
+  console.log(`Server running on: http://localhost:${PORT}`);
 });

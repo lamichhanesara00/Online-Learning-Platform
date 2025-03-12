@@ -16,8 +16,6 @@ const Header = () => {
         <Link to="/courses">Courses</Link>
         <Link to="/about">About</Link>
 
-        {/* ✅ New "Lectures" Link */}
-        <Link to="/add-lecture">Lectures</Link>
 
         {/* ✅ Show Account when logged in */}
         {isAuth ? (

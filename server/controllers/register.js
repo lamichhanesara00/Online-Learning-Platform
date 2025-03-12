@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { Admin } from "../models/register.js"; // ✅ Import from register.js model
 
 /**
- * ✅ ADMIN REGISTRATION FUNCTION
+ * ADMIN REGISTRATION FUNCTION
  */
 export const registerAdmin = async (req, res) => {
   try {
@@ -11,16 +11,16 @@ export const registerAdmin = async (req, res) => {
 
     email = email.toLowerCase().trim();
 
-    // ✅ Check if the admin email is already in use
+    //  Check if the admin email is already in use
     const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
       return res.status(400).json({ message: "Admin email already exists." });
     }
 
-    // ✅ Hash the password
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Create a new admin user
+    //  Create a new admin user
     const newAdmin = new Admin({
       name,
       email,

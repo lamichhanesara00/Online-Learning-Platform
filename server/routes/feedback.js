@@ -1,29 +1,28 @@
 import express from "express";
 import Feedback from "../models/Feedback.js";
-import dotenv from "dotenv";
+import { isAuth } from "../middlewares/isAuth.js";
 import mongoose from "mongoose";
-import { isAuth } from "../middlewares/isAuth.js"; // ✅ Ensure this middleware extracts req.user correctly
 
-dotenv.config();
 const router = express.Router();
 
 /**
- * ✅ GET Feedback for a Specific Course
- * URL: /api/course/:courseId/feedback
+ *  GET Feedback for a Specific Course
+ * URL: /api/feedback/course/:courseId
  */
-router.get("/:courseId/feedback", async (req, res) => {  // ✅ FIXED: Added :courseId
+router.get("/course/:courseId", async (req, res) => {
   try {
     const { courseId } = req.params;
 
-    console.log("🔍 Received Course ID:", courseId); // ✅ Debugging step
+    console.log("🔍 Fetching Feedback for Course ID:", courseId);
 
-    // ✅ Validate Course ID
     if (!mongoose.Types.ObjectId.isValid(courseId)) {
       return res.status(400).json({ message: "Invalid Course ID" });
     }
 
-    // ✅ Fetch feedback
-    const feedback = await Feedback.find({ course: courseId }).populate("user", "name email");
+    const feedback = await Feedback.find({ course: courseId }).populate(
+      "user",
+      "name email"
+    );
 
     if (!feedback.length) {
       return res.status(404).json({ message: "No feedback found for this course." });
@@ -31,65 +30,59 @@ router.get("/:courseId/feedback", async (req, res) => {  // ✅ FIXED: Added :co
 
     res.status(200).json(feedback);
   } catch (error) {
-    console.error("Error fetching feedback:", error);
+    console.error(" Error fetching feedback:", error);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
 
 /**
- * ✅ POST Submit Feedback for a Course
- * URL: /api/course/:courseId/feedback
- * Protected Route: Requires authentication
+ *  POST Submit Feedback for a Course
+ * URL: /api/feedback
  */
-router.post("/:courseId/feedback", isAuth, async (req, res) => {  // ✅ FIXED: Added :courseId
+router.post("/", isAuth, async (req, res) => {
   try {
-    const { courseId } = req.params;
-    const { comment, rating } = req.body;
-    const user = req.user.id; // ✅ Extract user from JWT token
+    const { course, comment, rating } = req.body;
+    const user = req.user ? req.user.id : null; // Ensure authentication extracts the user ID
 
-    console.log("📝 Submitting Feedback for Course ID:", courseId); // ✅ Debugging step
+    //  Debugging: Log incoming request body
+    console.log(" Received Data:", { course, user, comment, rating });
 
-    if (!comment || !rating) {
+    if (!course || !comment || !rating || !user) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    // ✅ Validate Course ID
-    if (!mongoose.Types.ObjectId.isValid(courseId)) {
+    if (!mongoose.Types.ObjectId.isValid(course)) {
       return res.status(400).json({ message: "Invalid Course ID" });
     }
 
-    // ✅ Create new feedback
     const newFeedback = new Feedback({
-      course: courseId,
+      course,
       user,
       comment,
-      rating
+      rating,
     });
 
     await newFeedback.save();
-    res.status(201).json({ message: "Feedback submitted successfully!", feedback: newFeedback });
+    res.status(201).json({ message: " Feedback submitted successfully!", feedback: newFeedback });
   } catch (error) {
-    console.error("Feedback Submission Error:", error);
+    console.error(" Feedback Submission Error:", error);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
 
 /**
  * ✅ PUT Edit Feedback
- * URL: /api/course/:courseId/feedback/:feedbackId
- * Protected Route: Requires authentication
+ * URL: /api/feedback/:feedbackId
  */
-router.put("/:courseId/feedback/:feedbackId", isAuth, async (req, res) => { // ✅ FIXED
+router.put("/:feedbackId", isAuth, async (req, res) => {
   try {
     const { feedbackId } = req.params;
     const { comment, rating } = req.body;
 
-    // ✅ Validate Feedback ID
     if (!mongoose.Types.ObjectId.isValid(feedbackId)) {
       return res.status(400).json({ message: "Invalid Feedback ID" });
     }
 
-    // ✅ Update feedback
     const feedback = await Feedback.findByIdAndUpdate(
       feedbackId,
       { comment, rating },
@@ -100,37 +93,34 @@ router.put("/:courseId/feedback/:feedbackId", isAuth, async (req, res) => { // �
       return res.status(404).json({ message: "Feedback not found" });
     }
 
-    res.status(200).json({ message: "Feedback updated successfully", feedback });
+    res.status(200).json({ message: "✅ Feedback updated successfully", feedback });
   } catch (error) {
-    console.error("Error editing feedback:", error);
+    console.error("❌ Error editing feedback:", error);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
 
 /**
  * ✅ DELETE Feedback
- * URL: /api/course/:courseId/feedback/:feedbackId
- * Protected Route: Requires authentication
+ * URL: /api/feedback/:feedbackId
  */
-router.delete("/:courseId/feedback/:feedbackId", isAuth, async (req, res) => { // ✅ FIXED
+router.delete("/:feedbackId", isAuth, async (req, res) => {
   try {
     const { feedbackId } = req.params;
 
-    // ✅ Validate Feedback ID
     if (!mongoose.Types.ObjectId.isValid(feedbackId)) {
       return res.status(400).json({ message: "Invalid Feedback ID" });
     }
 
-    // ✅ Delete feedback
     const feedback = await Feedback.findByIdAndDelete(feedbackId);
 
     if (!feedback) {
       return res.status(404).json({ message: "Feedback not found" });
     }
 
-    res.status(200).json({ message: "Feedback deleted successfully" });
+    res.status(200).json({ message: "✅ Feedback deleted successfully" });
   } catch (error) {
-    console.error("Error deleting feedback:", error);
+    console.error(" Error deleting feedback:", error);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });

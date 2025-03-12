@@ -1,0 +1,35 @@
+.admin-profile-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .profile-card {
+    padding: 20px;
+    border-radius: 8px;
+    background: #f8f9fa;
+  }
+  
+  .profile-card p {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  .logout-btn {
+    background: #d9534f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+  }
+  
+  .logout-btn:hover {
+    background: #c9302c;
+  }
+  

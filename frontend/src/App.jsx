@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
 import Home from "./pages/home/Home";
@@ -8,18 +8,25 @@ import Verify from "./pages/auth/Verify";
 import About from "./pages/about/About";
 import Account from "./pages/account/Account";
 import Courses from "./pages/courses/Courses";
-import Lecture from "./pages/courses/Lecture";
 import ViewFeedback from "./components/Feedback/Feedback";
 import ChatBox from "./components/chat/ChatBox";
 import StudentLogin from "./pages/auth/StudentLogin";
-import AdminLogin from "./pages/auth/AdminLogin"; 
+import AdminLogin from "./pages/auth/AdminLogin";
 import AdminRegister from "./pages/auth/AdminRegister";
+import AdminDashboard from "./pages/admin/AdminDashboard"; 
+import AddLecture from "./pages/admin/AddLecture"; 
+
+const PrivateRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem("adminToken");
+  return isAuthenticated ? children : <Navigate to="/admin-login" />;
+};
 
 const App = () => {
   return (
     <>
       <Header />
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -27,11 +34,15 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/account" element={<Account />} />
         <Route path="/courses" element={<Courses />} />
-        <Route path="/course/:courseId/lectures" element={<Lecture />} />
+        
         <Route path="/course/:courseId/feedback" element={<ViewFeedback />} />
         <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/student-login" element={<StudentLogin />} />
-        <Route path="/admin-login" element={<AdminLogin />} /> {/* ✅ Admin Login Route */}
+        <Route path="/admin-login" element={<AdminLogin />} />
+
+        {/* Protected Admin Routes */}
+        <Route path="/admin/dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
+        <Route path="/admin/add-lecture" element={<PrivateRoute><AddLecture /></PrivateRoute>} />
       </Routes>
       <Footer />
       <ChatBox />

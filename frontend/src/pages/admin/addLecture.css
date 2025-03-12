@@ -1,0 +1,120 @@
+.add-lecture-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.instruction-text {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+    text-align: left;
+    color: #444;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+input:focus, textarea:focus {
+    border-color: #28a745;
+    box-shadow: 0px 0px 5px rgba(40, 167, 69, 0.3);
+}
+
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background: #218838;
+    transform: scale(1.03);
+}
+
+/* Lecture List Styling */
+.lecture-list {
+    margin-top: 20px;
+    text-align: left;
+    list-style: none;
+    padding: 0;
+}
+
+.lecture-item {
+    background: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-left: 5px solid #28a745;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.lecture-item:hover {
+    background: #f1f1f1;
+}
+
+.lecture-item h4 {
+    font-size: 18px;
+    color: #333;
+    margin: 0;
+}
+
+.lecture-item p {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .add-lecture-container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
