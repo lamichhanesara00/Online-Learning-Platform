@@ -2,22 +2,31 @@
 import multer from "multer";
 import path from "path";
 
-// 1. Configure storage
+// Set up storage configuration for multer
 const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Folder where files will be saved
   },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname); // Unique filename with timestamp
+  }
 });
 
-// 2. (Optional) File filter if you want to allow only images, etc.
+// (Optional) Set file filter to accept only images (jpg, jpeg, png)
 const fileFilter = (req, file, cb) => {
-  // for demonstration, accept everything
-  cb(null, true);
+  const filetypes = /jpeg|jpg|png/;
+  const mimetype = filetypes.test(file.mimetype);
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+  if (mimetype && extname) {
+    return cb(null, true); // Accept file
+  } else {
+    return cb(new Error("Only image files are allowed."), false); // Reject file
+  }
 };
 
-// 3. Create the Multer instance
+// Initialize multer
 const upload = multer({ storage, fileFilter });
 
-// 4. Named export
+// Export the multer instance for use in routes
 export const uploadFiles = upload;

@@ -13,12 +13,22 @@ import ChatBox from "./components/chat/ChatBox";
 import StudentLogin from "./pages/auth/StudentLogin";
 import AdminLogin from "./pages/auth/AdminLogin";
 import AdminRegister from "./pages/auth/AdminRegister";
-import AdminDashboard from "./pages/admin/AdminDashboard"; 
-import AddLecture from "./pages/admin/AddLecture"; 
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AddLecture from "./pages/admin/AddLecture";
+import DashboardUser from "./pages/dashboard/Dashboard";
+import CreateCourse from "./pages/courses/CreateCourse";  
 
+
+// ✅ Protect Admin Routes
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("adminToken");
   return isAuthenticated ? children : <Navigate to="/admin-login" />;
+};
+
+// ✅ Protect Teacher Routes
+const TeacherRoute = ({ children }) => {
+  const isTeacher = localStorage.getItem("userRole") === "teacher"; 
+  return isTeacher ? children : <Navigate to="/login" />;
 };
 
 const App = () => {
@@ -34,11 +44,15 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/account" element={<Account />} />
         <Route path="/courses" element={<Courses />} />
-        
         <Route path="/course/:courseId/feedback" element={<ViewFeedback />} />
         <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/student-login" element={<StudentLogin />} />
         <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/create/courses" element={<CreateCourse />} />
+
+
+        {/* ✅ FIXED: Dashboard Route */}
+        <Route path="/dashboard" element={<TeacherRoute><DashboardUser /></TeacherRoute>} />
 
         {/* Protected Admin Routes */}
         <Route path="/admin/dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
@@ -50,4 +64,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default App; 
