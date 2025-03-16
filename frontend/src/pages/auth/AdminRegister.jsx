@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useUserData } from "../../context/UserContext";
 import { useNavigate, Link } from "react-router-dom";
 import "./AdminLogin.css"; // Reuse admin styles
 
 const AdminRegister = () => {
-  const { registerUser, btnLoading, error } = useUserData();
+  const { registerAdmin, btnLoading, error } = useUserData();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -26,52 +26,53 @@ const AdminRegister = () => {
       return;
     }
 
-    registerUser(name, email, password, "admin", navigate); // ✅ Pass "admin" role
+    registerAdmin(name, email, password);
   };
 
   return (
     <div className="admin-login-container">
-      <h2>Admin Register</h2>
-      <p className="register-subtitle">Create an admin account</p>
+      <div className="login-card">
+        <h2>Admin Register</h2>
 
-      {error && <p className="error-message">{error}</p>}
+        {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={handleSubmit}>
-        <label>Name:</label>
-        <input
-          type="text"
-          name="name"
-          placeholder="Enter your name"
-          onChange={handleChange}
-          required
-        />
+        <form onSubmit={handleSubmit}>
+          <label>Name</label>
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter your name"
+            onChange={handleChange}
+            required
+          />
 
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your email"
-          onChange={handleChange}
-          required
-        />
+          <label>Email</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            onChange={handleChange}
+            required
+          />
 
-        <label>Password:</label>
-        <input
-          type="password"
-          name="password"
-          placeholder="Create a strong password"
-          onChange={handleChange}
-          required
-        />
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Create a strong password"
+            onChange={handleChange}
+            required
+          />
 
-        <button type="submit" disabled={btnLoading}>
-          {btnLoading ? "Registering..." : "Register"}
-        </button>
+          <button type="submit" disabled={btnLoading}>
+            {btnLoading ? "Registering..." : "Register"}
+          </button>
+        </form>
 
-        <p className="login-link">
+        <div className="footer-links">
           Already have an admin account? <Link to="/admin-login">Login</Link>
-        </p>
-      </form>
+        </div>
+      </div>
     </div>
   );
 };

@@ -14,6 +14,8 @@ export const UserContextProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const userRole = localStorage.getItem("userRole");
+
   /** ✅ Fetch User Profile */
   const fetchUser = async () => {
     try {
@@ -25,6 +27,15 @@ export const UserContextProvider = ({ children }) => {
       }
 
       console.log("🔄 Fetching User Profile...");
+      console.log("User Role:", userRole);
+      if (userRole === "admin") {
+        const { data } = await axios.get(`${server}/api/admin/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(data);
+        setIsAuth(true);
+        return;
+      }
       const { data } = await axios.get(`${server}/api/user/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -32,7 +43,10 @@ export const UserContextProvider = ({ children }) => {
       setUser(data.user);
       setIsAuth(true);
     } catch (error) {
-      console.error("❌ Error fetching user:", error?.response?.data || error.message);
+      console.error(
+        "❌ Error fetching user:",
+        error?.response?.data || error.message
+      );
       if (error.response?.status === 401) {
         logoutUser();
       }
@@ -42,25 +56,33 @@ export const UserContextProvider = ({ children }) => {
   };
 
   /** ✅ Register User */
-  const registerUser = async (name, email, password) => {
+  const registerUser = async (name, email, password, role = "student") => {
     setBtnLoading(true);
     setError(null);
-  
+
     try {
-      const { data } = await axios.post(`${server}/api/user/register`, { name, email, password });
-  
+      const { data } = await axios.post(`${server}/api/user/register`, {
+        name,
+        email,
+        password,
+        role,
+      });
+
       // ✅ Store activation token for OTP verification
       setActivationToken(data.activationToken);
       localStorage.setItem("activationToken", data.activationToken); // ✅ Store for persistence
-  
+
       alert("✅ User registered successfully! Check your email for OTP.");
-      
+
       setTimeout(() => {
         navigate("/verify-otp");
       }, 2000);
     } catch (error) {
-      console.error("❌ Registration error:", error.response?.data || error.message);
-  
+      console.error(
+        "❌ Registration error:",
+        error.response?.data || error.message
+      );
+
       if (error.response?.status === 400) {
         setError(error.response.data.message || "User already exists.");
       } else {
@@ -70,13 +92,47 @@ export const UserContextProvider = ({ children }) => {
       setBtnLoading(false); // ✅ Ensure button resets after request
     }
   };
-  
+
+  // ✅ Register Admin
+  const registerAdmin = async (name, email, password) => {
+    setBtnLoading(true);
+    setError(null);
+
+    try {
+      const { data } = await axios.post(`${server}/api/admin/register`, {
+        name,
+        email,
+        password,
+      });
+
+      alert("✅ Registration Successfully! Redirecting to login...");
+
+      setTimeout(() => {
+        navigate("/admin-login");
+      }, 2000);
+    } catch (error) {
+      console.error(
+        "❌ Admin registration error:",
+        error.response?.data || error.message
+      );
+
+      if (error.response?.status === 400) {
+        setError(error.response.data.message || "Admin already exists.");
+      } else {
+        setError("Admin registration failed. Please try again.");
+      }
+    } finally {
+      setBtnLoading(false); // ✅ Ensure button resets after request
+    }
+  };
+
   /** ✅ Verify OTP */
   const verifyOtp = async (email, otp) => {
     setBtnLoading(true);
     setError(null);
 
-    const storedActivationToken = activationToken || localStorage.getItem("activationToken");
+    const storedActivationToken =
+      activationToken || localStorage.getItem("activationToken");
 
     if (!storedActivationToken) {
       setError("Activation token missing. Please register again.");
@@ -98,7 +154,10 @@ export const UserContextProvider = ({ children }) => {
         navigate("/login");
       }, 2000);
     } catch (error) {
-      console.error("❌ OTP Verification error:", error.response?.data || error.message);
+      console.error(
+        "❌ OTP Verification error:",
+        error.response?.data || error.message
+      );
       setError(error.response?.data?.message || "Invalid OTP. Try again.");
     } finally {
       setBtnLoading(false); // ✅ Ensure button resets
@@ -111,9 +170,14 @@ export const UserContextProvider = ({ children }) => {
     setError(null);
 
     try {
-      const { data } = await axios.post(`${server}/api/user/login`, { email, password });
+      const { data } = await axios.post(`${server}/api/user/login`, {
+        email,
+        password,
+      });
 
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data?.token);
+      localStorage.setItem("userRole", data?.user?.role);
+
       setIsAuth(true);
       setTimeout(async () => {
         await fetchUser();
@@ -121,6 +185,35 @@ export const UserContextProvider = ({ children }) => {
       }, 2000);
     } catch (error) {
       console.error("❌ Login error:", error.response?.data || error.message);
+      setError("Invalid email or password. Please try again.");
+    } finally {
+      setBtnLoading(false); // ✅ Ensure button resets
+    }
+  };
+
+  // ✅ Login Admin
+  const loginAdmin = async (email, password) => {
+    setBtnLoading(true);
+    setError(null);
+
+    try {
+      const { data } = await axios.post(`${server}/api/admin/login`, {
+        email,
+        password,
+      });
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userRole", "admin");
+      setIsAuth(true);
+      setTimeout(async () => {
+        await fetchUser();
+        navigate("/admin/dashboard");
+      }, 2000);
+    } catch (error) {
+      console.error(
+        "❌ Admin login error:",
+        error.response?.data || error.message
+      );
       setError("Invalid email or password. Please try again.");
     } finally {
       setBtnLoading(false); // ✅ Ensure button resets
@@ -137,7 +230,10 @@ export const UserContextProvider = ({ children }) => {
 
       alert("✅ New OTP sent to your email.");
     } catch (error) {
-      console.error("❌ Resend OTP error:", error.response?.data || error.message);
+      console.error(
+        "❌ Resend OTP error:",
+        error.response?.data || error.message
+      );
       setError(error.response?.data?.message || "Failed to resend OTP.");
     } finally {
       setBtnLoading(false); // ✅ Ensure button resets
@@ -148,6 +244,7 @@ export const UserContextProvider = ({ children }) => {
   const logoutUser = () => {
     console.warn("🚪 Logging out user...");
     localStorage.removeItem("token");
+    localStorage.removeItem("userRole");
     localStorage.removeItem("activationToken"); // ✅ Clear activation token on logout
     setUser(null);
     setIsAuth(false);
@@ -161,18 +258,23 @@ export const UserContextProvider = ({ children }) => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <UserContext.Provider value={{ 
-      user, 
-      isAuth, 
-      registerUser, 
-      verifyOtp, 
-      resendOtp, 
-      loginUser, 
-      logoutUser, 
-      activationToken, // ✅ Provide activation token in context
-      btnLoading, 
-      error 
-    }}>
+    <UserContext.Provider
+      value={{
+        user,
+        isAuth,
+        registerUser,
+        registerAdmin,
+        verifyOtp,
+        resendOtp,
+        userRole,
+        loginAdmin,
+        loginUser,
+        logoutUser,
+        activationToken, // ✅ Provide activation token in context
+        btnLoading,
+        error,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

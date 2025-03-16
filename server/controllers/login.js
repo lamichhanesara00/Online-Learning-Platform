@@ -1,11 +1,12 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Admin } from "../models/register.js"; // ✅ Import Admin model from register.js
+import { Admin } from "../models/Admin.js"; // ✅ Import Admin model from register.js
 
 /**
  * ✅ ADMIN LOGIN FUNCTION
  */
 export const loginAdmin = async (req, res) => {
+  console.log(`Admin Login Request: ${req.body.email}`);
   try {
     let { email, password } = req.body;
 
@@ -42,6 +43,8 @@ export const loginAdmin = async (req, res) => {
     });
   } catch (error) {
     console.error("Admin Login Error:", error);
-    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };

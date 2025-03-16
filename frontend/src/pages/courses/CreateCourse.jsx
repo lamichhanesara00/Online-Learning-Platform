@@ -1,90 +1,277 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import "./createCourse.css";
+import { FaArrowLeft, FaImage, FaUpload, FaSave } from "react-icons/fa";
+import "./createcourse.css";
 
 const CreateCourse = () => {
-  const [title, setTitle] = useState("");
-  const [instructor, setInstructor] = useState("");
-  const [duration, setDuration] = useState("");
-  const [price, setPrice] = useState("");
-  const [image, setImage] = useState(null);
+  const { id } = useParams(); // Get course ID if editing
   const navigate = useNavigate();
+  const isEditMode = !!id;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("instructor", instructor);
-    formData.append("duration", duration);
-    formData.append("price", price);
-    formData.append("image", image);
+  const [formData, setFormData] = useState({
+    title: "",
+    instructor: "",
+    duration: "",
+    price: "",
+  });
 
-    try {
-      await axios.post("http://localhost:5000/api/courses", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+  const [image, setImage] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-      alert("Course Created Successfully!");
-      navigate("/courses"); // Redirect to the courses page after successful submission
-    } catch (error) {
-      console.error("Error creating course:", error);
-      alert("Failed to create course.");
+  // Fetch course data if in edit mode
+  useEffect(() => {
+    if (isEditMode) {
+      const fetchCourse = async () => {
+        try {
+          setLoading(true);
+          const response = await axios.get(
+            `http://localhost:5000/api/courses/${id}`
+          );
+          const course = response.data;
+
+          setFormData({
+            title: course.title,
+            instructor: course.instructor,
+            duration: course.duration,
+            price: course.price,
+          });
+
+          // Set preview for existing image
+          if (course.image) {
+            setPreviewUrl(
+              course.image.startsWith("http")
+                ? course.image
+                : `http://localhost:5000/${course.image}`
+            );
+          }
+
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching course:", error);
+          setError("Failed to load course data. Please try again.");
+          setLoading(false);
+        }
+      };
+
+      fetchCourse();
+    }
+  }, [id, isEditMode]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      // Create a preview URL for the selected image
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const courseData = new FormData();
+      courseData.append("title", formData.title);
+      courseData.append("instructor", formData.instructor);
+      courseData.append("duration", formData.duration);
+      courseData.append("price", formData.price);
+
+      // Only append image if it exists (new or changed)
+      if (image) {
+        courseData.append("image", image);
+      }
+
+      // Configure axios request with proper headers for file upload
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      let response;
+      if (isEditMode) {
+        // Update existing course with file upload configuration
+        response = await axios.put(
+          `http://localhost:5000/api/course/${id}`,
+          courseData,
+          config
+        );
+        setSuccess("Course updated successfully!");
+      } else {
+        // Create new course with file upload configuration
+        response = await axios.post(
+          "http://localhost:5000/api/courses",
+          courseData,
+          config
+        );
+        setSuccess("Course created successfully!");
+      }
+
+      // Redirect after a short delay to show success message
+      setTimeout(() => {
+        navigate("/courses");
+      }, 1500);
+    } catch (error) {
+      console.error("Error saving course:", error);
+      setError(
+        error.response?.data?.message ||
+          "Failed to save course. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading && isEditMode) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading course data...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="dashboard-container">
-      {/* Sidebar */}
-      <div className="sidebar">
-        <h2>Teacher Dashboard</h2>
-        <ul>
-          <li onClick={() => navigate("/create/courses")}>➕ Create Course</li>
-          <li onClick={() => navigate("/manage-courses")}>📋 Manage Courses</li>
-          <li onClick={() => navigate("/courses")}>📚 View Courses</li>
-        </ul>
+    <div className="create-course-page">
+      <div className="page-header">
+        <button className="back-button" onClick={() => navigate("/courses")}>
+          <FaArrowLeft /> Back to Courses
+        </button>
+        <h1>{isEditMode ? "Edit Course" : "Create New Course"}</h1>
+        <p className="subtitle">
+          {isEditMode
+            ? "Update your course information below"
+            : "Fill out the form below to create a new course"}
+        </p>
       </div>
 
-      {/* Main Content */}
-      <div className="main-content">
-        <h2>Create a New Course</h2>
-        <form onSubmit={handleSubmit} className="create-course-form">
-          <input
-            type="text"
-            placeholder="Course Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Instructor Name"
-            value={instructor}
-            onChange={(e) => setInstructor(e.target.value)}
-            required
-          />
-          <input
-            type="number"
-            placeholder="Duration (hours)"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-            required
-          />
-          <input
-            type="number"
-            placeholder="Price ($)"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImage(e.target.files[0])}
-            required
-          />
+      {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">{success}</div>}
 
-          <button type="submit">Create Course</button>
+      <div className="create-course-container">
+        <form onSubmit={handleSubmit} className="course-form">
+          <div className="form-group">
+            <label htmlFor="title">Course Title</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="Enter course title"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="instructor">Instructor Name</label>
+            <input
+              type="text"
+              id="instructor"
+              name="instructor"
+              value={formData.instructor}
+              onChange={handleChange}
+              placeholder="Enter instructor name"
+              required
+            />
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="duration">Duration (hours)</label>
+              <input
+                type="number"
+                id="duration"
+                name="duration"
+                value={formData.duration}
+                onChange={handleChange}
+                placeholder="Enter duration in hours"
+                required
+                min="0"
+                step="0.5"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="price">Price ($)</label>
+              <input
+                type="number"
+                id="price"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="Enter price (0 for free)"
+                required
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+
+          <div className="form-group image-upload">
+            <label htmlFor="image">
+              <div className={`upload-area ${previewUrl ? "has-preview" : ""}`}>
+                {previewUrl ? (
+                  <img
+                    src={previewUrl}
+                    alt="Course preview"
+                    className="image-preview"
+                  />
+                ) : (
+                  <div className="upload-placeholder">
+                    <FaImage className="upload-icon" />
+                    <span>Click to select course image</span>
+                  </div>
+                )}
+              </div>
+            </label>
+            <input
+              type="file"
+              id="image"
+              name="image"
+              onChange={handleImageChange}
+              accept="image/*"
+              className="hidden-input"
+              required={!isEditMode && !previewUrl}
+            />
+            <div className="file-name">
+              {image
+                ? image.name
+                : previewUrl
+                ? "Current image"
+                : "No file selected"}
+            </div>
+          </div>
+
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? (
+              <>
+                <div className="button-spinner"></div>
+                <span>Saving...</span>
+              </>
+            ) : (
+              <>
+                <FaSave />
+                <span>{isEditMode ? "Update Course" : "Create Course"}</span>
+              </>
+            )}
+          </button>
         </form>
       </div>
     </div>

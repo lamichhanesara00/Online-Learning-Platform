@@ -1,6 +1,7 @@
-// controllers/admin.js
+import Lecture from "../models/Lecture.js";
 import { Course } from "../models/Course.js";
-import { Lecture } from "../models/Lecture.js";
+import { User } from "../models/User.js";
+import { Admin } from "../models/Admin.js";
 
 /**
  * CREATE COURSE
@@ -9,10 +10,20 @@ import { Lecture } from "../models/Lecture.js";
  */
 export const createCourse = async (req, res) => {
   try {
-    const { title, description, price, instructor, category, duration } = req.body;
+    const { title, description, price, instructor, category, duration } =
+      req.body;
+
+    console.log("Create new course:", req.body);
 
     // Validate fields
-    if (!title || !description || !price || !instructor || !category || !duration) {
+    if (
+      !title ||
+      !description ||
+      !price ||
+      !instructor ||
+      !category ||
+      !duration
+    ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -23,7 +34,9 @@ export const createCourse = async (req, res) => {
     // Convert duration to a number if needed
     const numericDuration = Number(duration);
     if (isNaN(numericDuration)) {
-      return res.status(400).json({ message: "Duration must be a valid number" });
+      return res
+        .status(400)
+        .json({ message: "Duration must be a valid number" });
     }
 
     // Create a new course
@@ -45,7 +58,9 @@ export const createCourse = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating course:", error);
-    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
@@ -57,17 +72,19 @@ export const createCourse = async (req, res) => {
 export const addLectures = async (req, res) => {
   try {
     const courseId = req.params.id;
+    console.log("🚀 ~ addLectures ~ courseId:", courseId);
 
     // 1) Find the course by ID
     const course = await Course.findById(courseId);
+    console.log("🚀 ~ addLectures ~ course:", course);
     if (!course) {
       return res.status(404).json({ message: "No course with this id" });
     }
 
-    const { title, description, video } = req.body;
-    if (!title || !description || !video) {
+    const { title, description, type, duration, url, content } = req.body;
+    if (!title || !description || !type) {
       return res.status(400).json({
-        message: "Lecture title, description, and video are required",
+        message: "Lecture title, description, and type are required",
       });
     }
 
@@ -75,8 +92,11 @@ export const addLectures = async (req, res) => {
     const newLecture = await Lecture.create({
       title,
       description,
-      video,
       course: courseId, // link the lecture to the course
+      duration,
+      type,
+      ...(type === "video" && { videoUrl: url }),
+      ...(type === "text" && { content }),
     });
 
     // 3) Associate the lecture with the course
@@ -90,6 +110,48 @@ export const addLectures = async (req, res) => {
     });
   } catch (error) {
     console.error("Error adding lectures:", error);
-    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+/**
+ * GET ALL USERS
+ * Returns all users and admins
+ */
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    const admins = await Admin.find().select("-password");
+
+    return res.status(200).json([...users, ...admins]);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+/**
+ * Delete a user by ID
+ * Param: :id for the user ID
+ */
+export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  console.log("Deleting user:", id);
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };

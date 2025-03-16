@@ -1,68 +1,226 @@
-/* 🌟 Navbar Styling */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #007bff;
-    padding: 15px 40px;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, #2575fc, #6a11cb);
+  padding: 15px 40px;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
+/* Logo styling */
 .logo {
-    font-size: 22px;
-    font-weight: bold;
+  font-size: 24px;
+  font-weight: bold;
 }
 
+.logo a {
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.logo a:hover {
+  opacity: 0.9;
+}
+
+/* Main navigation links */
 .nav-links {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 25px;
 }
 
 .nav-links a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
-    transition: color 0.3s ease-in-out;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 5px 0;
 }
 
-.nav-links a:hover {
-    color: #ddd;
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: white;
+  transition: width 0.3s ease;
 }
 
-/* 🌟 Account & Logout Styling */
-.account-dropdown {
-    display: flex;
-    align-items: center;
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Auth section styling */
+.auth-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Dropdown container and styling */
+.dropdown-container {
+  position: relative;
+}
+
+.dropdown-trigger {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.3s ease;
+}
+
+.dropdown-trigger:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dropdown-icon {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-trigger:hover .dropdown-icon {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  min-width: 180px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  z-index: 10;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-menu a {
+  display: block;
+  color: #333;
+  text-decoration: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.dropdown-menu a:hover {
+  background: #f5f5f5;
+  color: #6a11cb;
+}
+
+/* User dropdown styling */
+.user-dropdown-container {
+  position: relative;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.user-profile:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.user-icon {
+  font-size: 18px;
+}
+
+.user-menu {
+  right: 0;
+  min-width: 200px;
+}
+
+.logout-btn {
+  width: 100%;
+  background: none;
+  color: #ff4b2b;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #fff1f0;
+}
+
+/* Responsive design */
+@media (max-width: 900px) {
+  .header {
+    padding: 15px 20px;
+  }
+
+  .nav-links {
     gap: 15px;
+  }
 }
 
-.account-dropdown .logout-btn {
-    background: white;
-    color: #007bff;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 8px 15px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
-
-.account-dropdown .logout-btn:hover {
-    background: #e0e0e0;
-}
-
-/* 🌟 Responsive Navbar */
 @media (max-width: 768px) {
-    .header {
-        flex-direction: column;
-        text-align: center;
-    }
+  .header {
+    flex-direction: column;
+    padding: 15px;
+  }
 
-    .nav-links {
-        flex-direction: column;
-        gap: 10px;
-    }
+  .logo {
+    margin-bottom: 15px;
+  }
+
+  .nav-links {
+    margin: 15px 0;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .auth-section {
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }

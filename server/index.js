@@ -1,16 +1,16 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import connectDB from './Database/db.js';
-import userRoutes from './routes/user.js';
-import courseRoutes from './routes/course.js';
-import createCourseRoutes from './routes/createcourse.js';  // Use createCourse route
-import chatRoutes from './routes/chat.js';
-import studentRoutes from './routes/student.js';
-import feedbackRoutes from './routes/feedback.js';
-import adminRegisterRoutes from './routes/register.js';
-import adminLoginRoutes from './routes/login.js';
-import lectureRoutes from './routes/lecture.js';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import connectDB from "./Database/db.js";
+import userRoutes from "./routes/user.js";
+import courseRoutes from "./routes/course.js";
+import createCourseRoutes from "./routes/createcourse.js"; // Use createCourse route
+import chatRoutes from "./routes/chat.js";
+import studentRoutes from "./routes/student.js";
+import feedbackRoutes from "./routes/feedback.js";
+import adminRegisterRoutes from "./routes/register.js";
+import adminLoginRoutes from "./routes/login.js";
+import lectureRoutes from "./routes/lecture.js";
 
 dotenv.config();
 
@@ -37,10 +37,8 @@ app.use("/api/student", studentRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/admin", lectureRoutes);
 
-// Register createCourse route
 app.use(createCourseRoutes);
 
-// Catch-all route for unknown endpoints
 app.use((req, res) => {
   res.status(404).json({ message: "Route Not Found" });
 });

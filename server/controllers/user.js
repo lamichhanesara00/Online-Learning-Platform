@@ -1,5 +1,6 @@
 // controllers/user.js
 import { User } from "../models/User.js";
+import { Admin } from "../models/Admin.js";
 import bcrypt from "bcrypt";
 import sendMail from "../middlewares/sendMail.js";
 import jwt from "jsonwebtoken";
@@ -7,7 +8,7 @@ import jwt from "jsonwebtoken";
 // ✅ Register User
 const register = async (req, res) => {
   try {
-    let { email, name, password } = req.body;
+    let { email, name, password, role } = req.body;
 
     // 1) Normalize email to avoid case issues
     email = email.toLowerCase().trim();
@@ -35,6 +36,7 @@ const register = async (req, res) => {
       email,
       password: hashedPassword,
       otp,
+      role,
       otpCreatedAt: new Date(),
       isVerified: false,
     });
@@ -59,7 +61,9 @@ const register = async (req, res) => {
     });
   } catch (error) {
     console.error("Registration Error:", error);
-    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
@@ -91,15 +95,21 @@ const verifyUser = async (req, res) => {
     try {
       decodedToken = jwt.verify(activationToken, process.env.JWT_SECRET);
       if (decodedToken.email !== user.email) {
-        return res.status(400).json({ message: "Invalid activation token for this user." });
+        return res
+          .status(400)
+          .json({ message: "Invalid activation token for this user." });
       }
     } catch (err) {
-      return res.status(400).json({ message: "Invalid or expired activation token." });
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired activation token." });
     }
 
     // 6) Ensure OTP fields exist
     if (!user.otp || !user.otpCreatedAt) {
-      return res.status(400).json({ message: "OTP expired or not found. Request a new one." });
+      return res
+        .status(400)
+        .json({ message: "OTP expired or not found. Request a new one." });
     }
 
     // 7) Check OTP expiration (valid for 10 minutes)
@@ -108,7 +118,9 @@ const verifyUser = async (req, res) => {
     const expirationTime = 10 * 60 * 1000; // 10 minutes
 
     if (now - otpCreationTime > expirationTime) {
-      return res.status(400).json({ message: "OTP expired. Request a new one." });
+      return res
+        .status(400)
+        .json({ message: "OTP expired. Request a new one." });
     }
 
     // 8) Compare OTP (string comparison)
@@ -126,7 +138,9 @@ const verifyUser = async (req, res) => {
     return res.status(200).json({ message: "User verified successfully!" });
   } catch (error) {
     console.error("Verification Error:", error);
-    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
@@ -140,12 +154,16 @@ const loginUser = async (req, res) => {
     // 2) Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "No user found with this email." });
+      return res
+        .status(400)
+        .json({ message: "No user found with this email." });
     }
 
     // 3) Check if user is verified before allowing login
     if (!user.isVerified) {
-      return res.status(400).json({ message: "User is not verified. Please verify your account first." });
+      return res.status(400).json({
+        message: "User is not verified. Please verify your account first.",
+      });
     }
 
     // 4) Compare password with stored hash
@@ -155,17 +173,15 @@ const loginUser = async (req, res) => {
     }
 
     // 5) Create JWT token with the user's ID
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     // 6) Return token to client
     return res.status(200).json({
       message: "User logged in successfully!",
       token,
-      user
+      user,
     });
   } catch (error) {
     console.error("Login Error:", error);
@@ -180,7 +196,12 @@ const loginUser = async (req, res) => {
 const myProfile = async (req, res) => {
   try {
     // Assume req.user is set by an auth middleware (e.g., via JWT verification)
-    const user = await User.findById(req.user._id).select("-password"); // Exclude password
+    let user;
+    if (req.user.role === "admin") {
+      user = await Admin.findById(req.user._id).select("-password"); // Exclude password
+    } else {
+      user = await User.findById(req.user._id).select("-password"); // Exclude password
+    }
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -188,13 +209,13 @@ const myProfile = async (req, res) => {
 
     return res.status(200).json({
       message: "User profile fetched successfully!",
-      user
+      user,
     });
   } catch (error) {
     console.error("Profile Fetch Error:", error);
     return res.status(500).json({
       message: "Internal Server Error",
-      error: error.message
+      error: error.message,
     });
   }
 };

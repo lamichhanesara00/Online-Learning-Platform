@@ -1,127 +1,410 @@
 /* General Feedback Form Styling */
 .feedback-form-container {
-    width: 100%;
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 30px;
-    background: linear-gradient(135deg, #6e7ce0, #9e79e2);
-    border-radius: 10px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-    color: #fff;
-    font-family: 'Roboto', sans-serif;
-    text-align: center;
-    border: 1px solid #ddd;
-    box-sizing: border-box;
+  width: 100%;
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 30px;
+  background: linear-gradient(135deg, #6e7ce0, #9e79e2);
+  border-radius: 10px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+/* Form Header */
+.feedback-form-container h3 {
+  font-size: 32px;
+  margin-bottom: 25px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.feedback-form-container p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 20px;
+}
+
+/* Input Fields Styling */
+.feedback-form-container input,
+.feedback-form-container textarea,
+.feedback-form-container select {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f7f7f7;
+  color: #333;
+  transition: all 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+
+/* Focus Effect on Input */
+.feedback-form-container input:focus,
+.feedback-form-container textarea:focus,
+.feedback-form-container select:focus {
+  border-color: #9e79e2;
+  outline: none;
+  box-shadow: 0 0 8px rgba(158, 121, 226, 0.5);
+}
+
+/* Button Styling */
+.feedback-form-container button {
+  width: 100%;
+  padding: 14px;
+  background-color: #9e79e2;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button Hover Effect */
+.feedback-form-container button:hover {
+  background-color: #6e7ce0;
+}
+
+/* Success/Error Messages */
+.success-message,
+.error-message {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin-top: 20px;
+}
+
+.success-message {
+  color: green;
+}
+
+.error-message {
+  color: red;
+}
+
+/* Form Fields */
+.form-field {
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-field label {
+  font-size: 16px;
+  color: #f7f7f7;
+  font-weight: 600;
+  flex: 0.35;
+  text-align: left;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  flex: 0.6;
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+  .feedback-form-container {
+    padding: 20px;
   }
-  
-  /* Form Header */
   .feedback-form-container h3 {
-    font-size: 32px;
-    margin-bottom: 25px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: #fff;
+    font-size: 28px;
   }
-  
-  .feedback-form-container p {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 20px;
-  }
-  
-  /* Input Fields Styling */
-  .feedback-form-container input,
-  .feedback-form-container textarea,
-  .feedback-form-container select {
-    width: 100%;
-    padding: 14px;
-    margin: 12px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    background-color: #f7f7f7;
-    color: #333;
-    transition: all 0.3s ease-in-out;
-    box-sizing: border-box;
-  }
-  
-  /* Focus Effect on Input */
-  .feedback-form-container input:focus,
-  .feedback-form-container textarea:focus,
-  .feedback-form-container select:focus {
-    border-color: #9e79e2;
-    outline: none;
-    box-shadow: 0 0 8px rgba(158, 121, 226, 0.5);
-  }
-  
-  /* Button Styling */
   .feedback-form-container button {
-    width: 100%;
-    padding: 14px;
-    background-color: #9e79e2;
-    border: none;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 700;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  /* Button Hover Effect */
-  .feedback-form-container button:hover {
-    background-color: #6e7ce0;
-  }
-  
-  /* Success/Error Messages */
-  .success-message,
-  .error-message {
     font-size: 16px;
-    font-weight: 600;
-    color: #fff;
-    margin-top: 20px;
   }
-  
-  .success-message {
-    color: green;
+}
+
+/* Feedback Page Layout */
+.feedback-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Feedback Container */
+.feedback-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+}
+
+/* Feedback Header */
+.feedback-header {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: white;
+  padding: 30px;
+  position: relative;
+  text-align: center;
+}
+
+.feedback-header h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.feedback-header h2::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  width: 60px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.7);
+  transform: translateX(-50%);
+}
+
+.course-title {
+  font-size: 16px;
+  font-style: italic;
+  color: snow;
+  opacity: 0.9;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.back-link {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+  width: max-content;
+  background-color: transparent;
+}
+
+.back-link:hover {
+  opacity: 1;
+  background-color: transparent;
+}
+
+/* Feedback Form */
+.feedback-form {
+  padding: 30px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 16px;
+  color: #4a5568;
+  margin-bottom: 10px;
+}
+
+/* Star Rating */
+.star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 10px 0;
+}
+
+.star-option {
+  cursor: pointer;
+  position: relative;
+}
+
+.star-option input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.star-option label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.star-option label:hover {
+  transform: scale(1.1);
+}
+
+.star-filled {
+  color: #f6ad55;
+  font-size: 30px;
+}
+
+.star-empty {
+  color: #e2e8f0;
+  font-size: 30px;
+}
+
+.star-option span {
+  font-size: 12px;
+  margin-top: 5px;
+  font-weight: 600;
+  color: #718096;
+}
+
+/* Textarea */
+textarea {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 16px;
+  min-height: 120px;
+  resize: vertical;
+  font-family: inherit;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+textarea:focus {
+  border-color: #2575fc;
+  box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.1);
+  outline: none;
+}
+
+/* Submit Button */
+.submit-button {
+  width: 100%;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 10px rgba(106, 17, 203, 0.2);
+  margin-top: 10px;
+}
+
+.submit-button:hover {
+  background: linear-gradient(to right, #5a0db0, #1e68e6);
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 15px rgba(106, 17, 203, 0.3);
+}
+
+.submit-button:active {
+  transform: translateY(-1px);
+}
+
+.submit-button:disabled {
+  background: linear-gradient(to right, #d1d1d1, #a9a9a9);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Success and Error messages */
+.success-message,
+.error-message {
+  padding: 15px;
+  border-radius: 8px;
+  margin: 30px 30px 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+.success-message {
+  background: linear-gradient(to right, #00b09b, #96c93d);
+  color: white;
+  animation: fadeIn 0.5s ease-in-out;
+  box-shadow: 0px 4px 10px rgba(0, 176, 155, 0.3);
+}
+
+.error-message {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  color: white;
+  animation: shake 0.5s ease-in-out;
+  box-shadow: 0px 4px 10px rgba(255, 75, 43, 0.3);
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
   }
-  
-  .error-message {
-    color: red;
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-10px);
   }
-  
-  /* Form Fields */
-  .form-field {
-    margin-bottom: 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(10px);
   }
-  
-  .form-field label {
-    font-size: 16px;
-    color: #f7f7f7;
-    font-weight: 600;
-    flex: 0.35;
-    text-align: left;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .form-field input,
-  .form-field select,
-  .form-field textarea {
-    flex: 0.6;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* Mobile View */
-  @media (max-width: 768px) {
-    .feedback-form-container {
-      padding: 20px;
-    }
-    .feedback-form-container h3 {
-      font-size: 28px;
-    }
-    .feedback-form-container button {
-      font-size: 16px;
-    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .feedback-page {
+    padding: 20px 10px;
   }
-  
+
+  .star-rating {
+    gap: 10px;
+  }
+
+  .star-filled,
+  .star-empty {
+    font-size: 24px;
+  }
+
+  .feedback-header h2 {
+    font-size: 24px;
+    margin-top: 15px;
+  }
+
+  .back-link {
+    position: relative;
+    left: 0;
+    top: 0;
+    margin-bottom: 15px;
+    display: inline-block;
+  }
+
+  .feedback-header {
+    text-align: center;
+    padding: 20px;
+  }
+}

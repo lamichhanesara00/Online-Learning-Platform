@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Admin } from "../models/register.js"; // ✅ Import from register.js model
+import { Admin } from "../models/Admin.js"; // ✅ Import from register.js model
 
 /**
  * ADMIN REGISTRATION FUNCTION
@@ -25,7 +25,6 @@ export const registerAdmin = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: "admin",
       isVerified: true,
     });
 
@@ -45,6 +44,8 @@ export const registerAdmin = async (req, res) => {
     });
   } catch (error) {
     console.error("Admin Registration Error:", error);
-    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };

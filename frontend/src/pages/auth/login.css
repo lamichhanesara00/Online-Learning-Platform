@@ -1,81 +1,184 @@
+/* Global Variables for Reusable Values */
+:root {
+  --primary-color: #007bff;
+  --primary-dark: #0056b3;
+  --primary-darker: #003c82;
+  --background-light: #f9f9f9;
+  --text-color: #333;
+  --error-color: #ff4d4d;
+  --success-color: #28a745;
+  --border-radius: 8px;
+  --box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s ease-in-out;
+}
+
+/* Base Container Styles */
 .login-container {
   max-width: 400px;
   margin: 100px auto;
   padding: 40px;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.15);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
   text-align: center;
-  transition: 0.3s ease-in-out;
+  transition: var(--transition);
 }
 
+/* Title Styles */
 .login-title {
   font-size: 26px;
-  color: #007bff;
+  color: var(--primary-color);
   font-weight: bold;
+  margin-bottom: 20px;
 }
 
-.input-group {
-  margin-bottom: 15px;
+/* Input Group Styles */
+.login-input-group {
+  margin-bottom: 20px;
   text-align: left;
 }
 
-.input-group label {
+.login-input-group label {
   display: block;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 5px;
+  color: var(--text-color);
+  margin-bottom: 8px;
 }
 
-.input-group input {
-  width: 100%;
+.login-input-group input {
+  width: 90%;
   padding: 12px;
   border: 2px solid #ccc;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   font-size: 16px;
-  background: #f9f9f9;
+  background: var(--background-light);
+  transition: var(--transition);
 }
 
-.input-group input:focus {
-  border-color: #007bff;
+.login-input-group input:focus {
+  border-color: var(--primary-color);
   outline: none;
   box-shadow: 0px 3px 10px rgba(0, 123, 255, 0.2);
   background: #ffffff;
 }
 
+/* Role Selection Styles */
+.role-selection {
+  margin-bottom: 20px;
+  text-align: left;
+}
+.role-selection p {
+  font-weight: bold;
+}
+
+.role-selection label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.role-selection div {
+  display: flex;
+  gap: 15px;
+  margin-top: 8px;
+}
+
+.role-selection input[type="radio"] {
+  margin-right: 8px;
+}
+
+.login-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Button Styles */
 .login-button {
   width: 100%;
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-dark)
+  );
   color: white;
   border: none;
   padding: 12px;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   font-size: 16px;
-  transition: all 0.3s ease-in-out;
+  transition: var(--transition);
   font-weight: bold;
   text-transform: uppercase;
 }
 
 .login-button:hover {
-  background: linear-gradient(135deg, #0056b3, #003c82);
+  background: linear-gradient(
+    135deg,
+    var(--primary-dark),
+    var(--primary-darker)
+  );
   transform: translateY(-2px);
   box-shadow: 0px 6px 20px rgba(0, 0, 255, 0.4);
 }
 
-.register-link {
-  margin-top: 15px;
-  font-size: 15px;
-  color: #333;
+.login-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.register-link a {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: bold;
+/* Error Message Styles */
+.error-message {
+  color: var(--error-color);
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
 }
 
-.register-link a:hover {
-  text-decoration: underline;
-  color: #0056b3;
+/* Success Popup Styles */
+.success-popup {
+  background: var(--success-color);
+  color: white;
+  padding: 12px;
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+  font-size: 14px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Fade-in Animation for Success Popup */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 480px) {
+  .login-container {
+    margin: 50px auto;
+    padding: 20px;
+  }
+
+  .login-title {
+    font-size: 22px;
+  }
+
+  .input-group input {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .login-button {
+    padding: 10px;
+    font-size: 14px;
+  }
 }

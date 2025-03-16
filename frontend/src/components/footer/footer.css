@@ -1,47 +1,192 @@
-/* Footer Container */
 .footer {
-    background: #007bff; /* Blue color like header */
-    color: white;
-    text-align: center;
-    padding: 20px 0;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    font-size: 14px;
+  background: linear-gradient(to right, #2b5876, #4e4376);
+  color: white;
+  padding: 60px 0 20px;
+  margin-top: 80px;
+  position: relative;
 }
 
-/* Footer Content */
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Footer Links */
-.footer-links {
-    margin-top: 10px;
-    display: flex;
-    gap: 20px;
-}
-
-.footer-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease-in-out;
-    font-size: 14px;
-}
-
-.footer-links a:hover {
-    text-decoration: underline;
-    color: #dfe6ff; /* Lighter shade for hover effect */
-}
-
-/* Copyright */
 .footer p {
-    margin-top: 10px;
-    font-size: 12px;
-    opacity: 0.8;
+  color: white;
+}
+
+/* Main footer content */
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  padding: 0 20px;
+}
+
+/* Footer sections styling */
+.footer-section {
+  margin-bottom: 30px;
+}
+
+.footer-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.footer-section h3::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 50px;
+  height: 2px;
+  background: #6a11cb;
+}
+
+/* About section */
+.about p {
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.contact p {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.contact-icon {
+  margin-right: 10px;
+  color: #6a11cb;
+}
+
+/* Social media icons */
+.socials {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.socials a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.socials a:hover {
+  background: #6a11cb;
+  transform: translateY(-3px);
+}
+
+/* Quick links */
+.links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.links li {
+  margin-bottom: 12px;
+}
+
+.links a {
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  opacity: 0.9;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.links a:hover {
+  color: #b19cd9;
+  transform: translateX(5px);
+}
+
+/* Newsletter section */
+.newsletter p {
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.newsletter form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.newsletter input {
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.newsletter input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.newsletter input:focus {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.newsletter button {
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background: #6a11cb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.newsletter button:hover {
+  background: #7d33d8;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+}
+
+/* Footer bottom */
+.footer-bottom {
+  text-align: center;
+  padding-top: 30px;
+  margin-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .footer-section h3::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .contact p {
+    justify-content: center;
+  }
+
+  .socials {
+    justify-content: center;
+  }
 }

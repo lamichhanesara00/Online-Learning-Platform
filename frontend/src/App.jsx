@@ -16,18 +16,21 @@ import AdminRegister from "./pages/auth/AdminRegister";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AddLecture from "./pages/admin/AddLecture";
 import DashboardUser from "./pages/dashboard/Dashboard";
-import CreateCourse from "./pages/courses/CreateCourse";  
-
+import CreateCourse from "./pages/courses/CreateCourse";
+import "./App.css";
+import CourseDetails from "./pages/courses/CourseDetails";
+import EnrollForm from "./pages/courses/EnrollForm";
+import CreateLecture from "./pages/courses/CreateLecture";
 
 // ✅ Protect Admin Routes
 const PrivateRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem("adminToken");
+  const isAuthenticated = localStorage.getItem("userRole");
   return isAuthenticated ? children : <Navigate to="/admin-login" />;
 };
 
 // ✅ Protect Teacher Routes
 const TeacherRoute = ({ children }) => {
-  const isTeacher = localStorage.getItem("userRole") === "teacher"; 
+  const isTeacher = localStorage.getItem("userRole") === "teacher";
   return isTeacher ? children : <Navigate to="/login" />;
 };
 
@@ -43,20 +46,47 @@ const App = () => {
         <Route path="/verify-otp" element={<Verify />} />
         <Route path="/about" element={<About />} />
         <Route path="/account" element={<Account />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/course/:courseId/feedback" element={<ViewFeedback />} />
         <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/student-login" element={<StudentLogin />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/create/courses" element={<CreateCourse />} />
-
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/course/:id" element={<CourseDetails />} />
+        <Route path="/edit-course/:id" element={<CreateCourse />} />
+        <Route path="/course/:courseId/feedback" element={<ViewFeedback />} />
+        <Route path="/course/:id/enroll" element={<EnrollForm />} />
+        <Route
+          path="/course/:courseId/lectures/add"
+          element={<CreateLecture />}
+        />
 
         {/* ✅ FIXED: Dashboard Route */}
-        <Route path="/dashboard" element={<TeacherRoute><DashboardUser /></TeacherRoute>} />
+        <Route
+          path="/dashboard"
+          element={
+            <TeacherRoute>
+              <DashboardUser />
+            </TeacherRoute>
+          }
+        />
 
         {/* Protected Admin Routes */}
-        <Route path="/admin/dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
-        <Route path="/admin/add-lecture" element={<PrivateRoute><AddLecture /></PrivateRoute>} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <PrivateRoute>
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/add-lecture"
+          element={
+            <PrivateRoute>
+              <AddLecture />
+            </PrivateRoute>
+          }
+        />
       </Routes>
       <Footer />
       <ChatBox />
@@ -64,4 +94,4 @@ const App = () => {
   );
 };
 
-export default App; 
+export default App;

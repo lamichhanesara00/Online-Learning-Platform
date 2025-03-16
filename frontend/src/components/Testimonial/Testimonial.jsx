@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import "./Testimonial.css";
+import "./testimonial.css";
 
 const Testimonial = () => {
   console.log("✅ Testimonial Component Loaded");

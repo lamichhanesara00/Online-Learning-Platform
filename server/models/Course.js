@@ -3,12 +3,10 @@ import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  description: { type: String },
   price: { type: Number },
   instructor: { type: String },
-  category: { type: String },
   duration: { type: Number }, // store numeric duration
-  image: { type: String },    // store the file path if you upload an image
+  image: { type: String }, // store the file path if you upload an image
 
   // Lectures array references the Lecture model
   lectures: [

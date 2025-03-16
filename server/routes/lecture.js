@@ -1,8 +1,21 @@
 import express from "express";
-import { addLecture, getLectures, updateLecture, deleteLecture } from "../controllers/lectureController.js";
-import { verifyAdmin } from "../middlewares/authMiddleware.js"; 
+import {
+  addLecture,
+  getLectures,
+  updateLecture,
+  deleteLecture,
+} from "../controllers/lectureController.js";
+import { verifyAdmin } from "../middlewares/authMiddleware.js";
+import { getAdminProfile } from "../controllers/adminprofile.js";
+import { getUsers, deleteUser } from "../controllers/admin.js";
 
 const router = express.Router();
+
+router.get("/users", verifyAdmin, getUsers);
+
+router.get("/profile", verifyAdmin, getAdminProfile);
+
+router.delete("/users/:id", deleteUser);
 
 /**
  * ✅ Route: Add a lecture (Admin Only)
@@ -26,6 +39,6 @@ router.put("/update-lecture/:id", verifyAdmin, updateLecture);
  * ✅ Route: Delete a lecture (Admin Only)
  * @method DELETE /api/admin/delete-lecture/:id
  */
-router.delete("/delete-lecture/:id", verifyAdmin, deleteLecture);
+router.delete("/delete-lecture/:id", deleteLecture);
 
 export default router;

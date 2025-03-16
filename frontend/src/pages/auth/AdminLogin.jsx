@@ -1,14 +1,10 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import "./AdminLogin.css";
-
+import { useState } from "react";
+import { useUserData } from "../../context/UserContext";
+import { Link } from "react-router-dom";
 
 const AdminLogin = () => {
   const [adminData, setAdminData] = useState({ email: "", password: "" });
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const { loginAdmin, btnLoading, error } = useUserData();
 
   const handleChange = (e) => {
     setAdminData({ ...adminData, [e.target.name]: e.target.value });
@@ -16,40 +12,49 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    console.log("Admin login data:", adminData);
 
-    try {
-      const response = await axios.post("http://localhost:5000/api/admin/login", adminData);
-
-      if (response.data.token) {
-        localStorage.setItem("adminToken", response.data.token);
-        localStorage.setItem("adminRole", "admin"); // ✅ Save role
-        alert("Login successful!");
-        navigate("/admin/dashboard");
-      } else {
-        setError("Invalid credentials");
-      }
-    } catch (error) {
-      setError("Login failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    loginAdmin(adminData.email, adminData.password);
   };
 
   return (
-    <div className="admin-login-container">
-      <h2>Admin Login</h2>
-      {error && <div className="error-message">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <label>Email:</label>
-        <input type="email" name="email" value={adminData.email} onChange={handleChange} required />
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2 className="auth-heading">Admin Login</h2>
 
-        <label>Password:</label>
-        <input type="password" name="password" value={adminData.password} onChange={handleChange} required />
+        {error && <div className="auth-error">{error}</div>}
 
-        <button type="submit" disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
-      </form>
+        <form onSubmit={handleSubmit}>
+          <label className="auth-label">Email</label>
+          <input
+            className="auth-input"
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            onChange={handleChange}
+            required
+          />
+
+          <label className="auth-label">Password</label>
+          <input
+            className="auth-input"
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            onChange={handleChange}
+            required
+          />
+
+          <button className="auth-button" type="submit" disabled={btnLoading}>
+            {btnLoading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          Don&apos;t have an admin account?{" "}
+          <Link to="/admin-register">Register</Link>
+        </div>
+      </div>
     </div>
   );
 };

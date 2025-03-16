@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@swc/core": "^1.11.9",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
     "khalti-checkout-web": "^2.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -30,5 +32,8 @@
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
     "vite": "^6.1.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.9.5"
   }
 }

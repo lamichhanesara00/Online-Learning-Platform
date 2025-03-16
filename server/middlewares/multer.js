@@ -5,11 +5,11 @@ import path from "path";
 // Set up storage configuration for multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Folder where files will be saved
+    cb(null, "uploads/"); // Folder where files will be saved
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname); // Unique filename with timestamp
-  }
+    cb(null, Date.now() + "-" + file.originalname.replace(" ", "-"));
+  },
 });
 
 // (Optional) Set file filter to accept only images (jpg, jpeg, png)
