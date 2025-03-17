@@ -22,7 +22,7 @@ import CourseDetails from "./pages/courses/CourseDetails";
 import EnrollForm from "./pages/courses/EnrollForm";
 import CreateLecture from "./pages/courses/CreateLecture";
 
-// ✅ Protect Admin Routes
+//  Protect Admin Routes
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("userRole");
   return isAuthenticated ? children : <Navigate to="/admin-login" />;
