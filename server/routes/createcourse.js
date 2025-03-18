@@ -32,6 +32,16 @@ router.post("/api/courses", uploadFiles.single("image"), async (req, res) => {
 });
 
 // GET: Fetch all courses
+router.get("/api/course/all", async (req, res) => {
+  try {
+    const courses = await Course.find();
+    res.status(200).json(courses);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch courses." });
+  }
+});
+
+// GET: Fetch all courses
 router.get("/api/courses", async (req, res) => {
   try {
     const courses = await Course.find();
