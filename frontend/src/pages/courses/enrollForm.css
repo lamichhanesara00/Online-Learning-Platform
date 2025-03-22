@@ -212,7 +212,7 @@
 
 .continue-button {
   width: 100%;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   padding: 14px;
   border: none;
@@ -384,7 +384,7 @@
 
 .access-course-button {
   width: 100%;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   padding: 16px;
   border: none;

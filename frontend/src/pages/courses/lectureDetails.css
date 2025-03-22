@@ -231,7 +231,7 @@
 }
 
 .nav-button.course {
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   flex: 2;
 }
@@ -286,7 +286,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   padding: 12px 25px;
   border-radius: 8px;

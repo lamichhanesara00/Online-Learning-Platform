@@ -472,7 +472,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   padding: 12px 20px;
   border-radius: 8px;

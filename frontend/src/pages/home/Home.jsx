@@ -254,21 +254,6 @@ const Home = () => {
 
       <Testimonial />
 
-      <div className="cta-section">
-        <h2>Ready to Start Learning?</h2>
-        <p>
-          Join thousands of students who are already learning on our platform
-        </p>
-        {!isAuth ? (
-          <Link to="/register" className="cta-button">
-            Sign Up Now
-          </Link>
-        ) : (
-          <Link to="/courses" className="cta-button">
-            Explore Courses
-          </Link>
-        )}
-      </div>
     </div>
   );
 };

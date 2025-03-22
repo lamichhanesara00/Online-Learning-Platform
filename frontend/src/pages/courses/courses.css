@@ -233,7 +233,7 @@
   bottom: -10px;
   width: 60px;
   height: 4px;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   transform: translateX(-50%);
   border-radius: 2px;
 }
@@ -324,7 +324,7 @@
 
 .create-course-btn {
   padding: 14px 24px;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   border: none;
   border-radius: 8px;
   color: white;

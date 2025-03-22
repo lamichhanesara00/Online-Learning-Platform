@@ -180,7 +180,7 @@ textarea {
 .submit-lecture-button {
   margin-top: 10px;
   padding: 16px;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   font-weight: 600;
   font-size: 18px;

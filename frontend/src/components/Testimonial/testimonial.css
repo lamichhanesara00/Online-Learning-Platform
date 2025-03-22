@@ -116,7 +116,7 @@
   transform: translateX(-50%);
   width: 80px;
   height: 3px;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   border-radius: 3px;
 }
 
@@ -166,7 +166,7 @@
   height: 60px;
   border-radius: 50%;
   overflow: hidden;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   display: flex;
   align-items: center;
   justify-content: center;

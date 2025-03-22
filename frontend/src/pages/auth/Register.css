@@ -38,7 +38,7 @@
   left: 0;
   width: 100%;
   height: 5px;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
 }
 
 @keyframes slideUp {
@@ -78,7 +78,7 @@
   position: absolute;
   width: 60px;
   height: 3px;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
@@ -146,7 +146,7 @@ button {
   font-weight: bold;
   box-shadow: 0px 4px 15px rgba(106, 13, 173, 0.2);
   width: 100%;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   padding: 14px;
   border: none;

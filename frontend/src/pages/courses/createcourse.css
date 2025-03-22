@@ -141,7 +141,7 @@
   bottom: -10px;
   width: 60px;
   height: 4px;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   transform: translateX(-50%);
   border-radius: 2px;
 }
@@ -290,7 +290,7 @@ textarea:focus {
 .submit-button {
   margin-top: 20px;
   padding: 16px;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   font-weight: 600;
   font-size: 18px;

@@ -123,7 +123,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   border-radius: 4px;
   transition: width 0.5s ease;
 }
@@ -148,7 +148,7 @@
 }
 
 .continue-button {
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   flex: 2;
   justify-content: center;
@@ -201,7 +201,7 @@
 }
 
 .browse-courses-btn {
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   padding: 12px 25px;
   border-radius: 8px;

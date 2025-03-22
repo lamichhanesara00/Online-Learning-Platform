@@ -228,7 +228,7 @@
 }
 
 .add-review-button {
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   padding: 10px 20px;
   border-radius: 8px;
@@ -354,7 +354,7 @@
 .enroll-button,
 .access-course-button {
   width: 100%;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: #007BFF;
   color: white;
   padding: 15px;
   border: none;
