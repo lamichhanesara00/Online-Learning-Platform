@@ -6,6 +6,37 @@ import mongoose from "mongoose";
 const router = express.Router();
 
 /**
+ *  GET Feedback randomly 5 feedbacks
+ * URL: /api/feedback/random
+ */
+router.get("/random", async (req, res) => {
+  try {
+    console.log("🔍 Fetching Random Feedback");
+
+    const feedback = await Feedback.aggregate([
+      { $sample: { size: 5 } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      { $project: { user: { name: 1, email: 1 }, comment: 1, rating: 1 } },
+    ]);
+
+    res.status(200).json(feedback);
+  } catch (error) {
+    console.error(" Error fetching feedback:", error);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
+/**
  *  GET Feedback for a Specific Course
  * URL: /api/feedback/course/:courseId
  */
@@ -24,14 +55,12 @@ router.get("/course/:courseId", async (req, res) => {
       "name email"
     );
 
-    if (!feedback.length) {
-      return res.status(404).json({ message: "No feedback found for this course." });
-    }
-
     res.status(200).json(feedback);
   } catch (error) {
     console.error(" Error fetching feedback:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
 
@@ -63,10 +92,15 @@ router.post("/", isAuth, async (req, res) => {
     });
 
     await newFeedback.save();
-    res.status(201).json({ message: " Feedback submitted successfully!", feedback: newFeedback });
+    res.status(201).json({
+      message: " Feedback submitted successfully!",
+      feedback: newFeedback,
+    });
   } catch (error) {
     console.error(" Feedback Submission Error:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
 
@@ -93,10 +127,14 @@ router.put("/:feedbackId", isAuth, async (req, res) => {
       return res.status(404).json({ message: "Feedback not found" });
     }
 
-    res.status(200).json({ message: "✅ Feedback updated successfully", feedback });
+    res
+      .status(200)
+      .json({ message: "✅ Feedback updated successfully", feedback });
   } catch (error) {
     console.error("❌ Error editing feedback:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
 
@@ -121,7 +159,9 @@ router.delete("/:feedbackId", isAuth, async (req, res) => {
     res.status(200).json({ message: "✅ Feedback deleted successfully" });
   } catch (error) {
     console.error(" Error deleting feedback:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
 

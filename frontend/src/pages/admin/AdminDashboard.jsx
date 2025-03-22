@@ -74,7 +74,7 @@ const AdminDashboard = () => {
 
         // Fetch lectures
         const lecturesResponse = await axios.get(
-          "http://localhost:5000/api/admin/get-lectures",
+          "http://localhost:5000/api/lectures",
           { headers }
         );
         setLectures(lecturesResponse.data);

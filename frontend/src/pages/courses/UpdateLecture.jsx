@@ -4,10 +4,8 @@ import axios from "axios";
 import { FaVideo, FaArrowLeft, FaSave, FaClock, FaBook } from "react-icons/fa";
 import "./createLecture.css";
 
-const CreateLecture = () => {
-  const { courseId, id } = useParams();
-  const isEditMode = !!id;
-
+const UpdateLecture = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
@@ -21,36 +19,44 @@ const CreateLecture = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [course, setCourse] = useState(null);
+  const [lecture, setLecture] = useState(null);
 
   // Fetch course details to display in the header
   useEffect(() => {
-    const fetchCourseDetails = async () => {
-      if (!courseId) return;
+    const fetchLectureDetails = async () => {
+      if (!id) return;
 
       try {
         setLoading(true);
         const token =
           localStorage.getItem("token") || localStorage.getItem("adminToken");
         const response = await axios.get(
-          `http://localhost:5000/api/courses/${courseId}`,
+          `http://localhost:5000/api/lectures/${id}/`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        setCourse(response.data);
+        setLecture(response.data);
+        setFormData({
+          title: response.data.title,
+          description: response.data.description,
+          duration: response.data.duration,
+          videoUrl: response.data.videoUrl || "",
+          content: response.data.content || "",
+          lectureType: response.data.type,
+        });
         setError(null);
       } catch (err) {
-        console.error("Error fetching course details:", err);
-        setError("Failed to load course details. Please try again.");
+        console.error("Error fetching lecture details:", err);
+        setError("Failed to load lecture details. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCourseDetails();
-  }, [courseId]);
+    fetchLectureDetails();
+  }, [id]);
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -104,7 +110,6 @@ const CreateLecture = () => {
       const token =
         localStorage.getItem("token") || localStorage.getItem("adminToken");
       const requestData = {
-        courseId,
         title: formData.title,
         description: formData.description,
         duration: parseFloat(formData.duration),
@@ -116,15 +121,15 @@ const CreateLecture = () => {
         content: formData.lectureType === "text" ? formData.content : null,
       };
 
-      const response = await axios.post(
-        `http://localhost:5000/api/courses/${courseId}/lecture`,
+      const response = await axios.put(
+        `http://localhost:5000/api/lectures/${id}`,
         requestData,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      setSuccess("Lecture created successfully!");
+      setSuccess("Lecture updated successfully!");
       setFormData({
         title: "",
         description: "",
@@ -136,7 +141,7 @@ const CreateLecture = () => {
 
       // Redirect after a short delay to show success message
       setTimeout(() => {
-        navigate(`/course/${courseId}`);
+        navigate(`/lecture/${id}`);
       }, 2000);
     } catch (err) {
       console.error("Error creating lecture:", err);
@@ -151,14 +156,14 @@ const CreateLecture = () => {
 
   // Handle going back to course page
   const handleBack = () => {
-    navigate(`/course/${courseId}`);
+    navigate(`/course`);
   };
 
   if (loading) {
     return (
       <div className="lecture-form-loading">
         <div className="loading-spinner"></div>
-        <p>Loading course details...</p>
+        <p>Loading lecture details...</p>
       </div>
     );
   }
@@ -169,8 +174,7 @@ const CreateLecture = () => {
         <button className="back-button" onClick={handleBack}>
           <FaArrowLeft /> Back to Course
         </button>
-        <h1>Add New Lecture</h1>
-        {course && <p className="course-name">to {course.title}</p>}
+        <h1>Update Lecture</h1>
       </div>
 
       {error && <div className="lecture-error-message">{error}</div>}
@@ -316,7 +320,7 @@ const CreateLecture = () => {
             ) : (
               <>
                 <FaSave />
-                <span>Save Lecture</span>
+                <span>Save Changes</span>
               </>
             )}
           </button>
@@ -326,4 +330,4 @@ const CreateLecture = () => {
   );
 };
 
-export default CreateLecture;
+export default UpdateLecture;

@@ -6,11 +6,14 @@ import userRoutes from "./routes/user.js";
 import courseRoutes from "./routes/course.js";
 import createCourseRoutes from "./routes/createcourse.js"; // Use createCourse route
 import chatRoutes from "./routes/chat.js";
+import adminRoute from "./routes/adminRoute.js";
 import studentRoutes from "./routes/student.js";
+import progressRoutes from "./routes/progress.js";
 import feedbackRoutes from "./routes/feedback.js";
 import adminRegisterRoutes from "./routes/register.js";
 import adminLoginRoutes from "./routes/login.js";
 import lectureRoutes from "./routes/lecture.js";
+import enrollmentRoutes from "./routes/enrollement.js"; // Add enrollment route
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -38,15 +41,17 @@ connectDB().catch((error) => {
 
 // Register Routes
 app.use("/api/user", userRoutes);
-// app.use("/api/course", courseRoutes);
 app.use("/api/admin/register", adminRegisterRoutes);
 app.use("/api/admin/login", adminLoginRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/student", studentRoutes);
 app.use("/api/feedback", feedbackRoutes);
-app.use("/api/admin", lectureRoutes);
+app.use("/api/admin", adminRoute);
+app.use("/api/lectures", lectureRoutes);
+app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/progress", progressRoutes);
 
-app.use(createCourseRoutes);
+app.use("/api/courses", createCourseRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route Not Found" });

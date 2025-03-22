@@ -18,13 +18,30 @@ const Courses = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
 
-  const { userRole } = useUserData();
+  const { userRole, user, isAuth } = useUserData();
 
   const navigate = useNavigate();
   const isTeacher = userRole === "teacher";
   const isAdmin = userRole === "admin";
   const isStudent = userRole === "student";
+
+  const fetchUserEnrolledCourses = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        "http://localhost:5000/api/enrollments/user/" + user._id
+      );
+      setEnrolledCourses(res.data);
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching enrolled courses:", error);
+      setError("Failed to load enrolled courses. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchCourses = async () => {
     try {
@@ -43,6 +60,23 @@ const Courses = () => {
   useEffect(() => {
     fetchCourses();
   }, []);
+
+  useEffect(() => {
+    if (isAuth && isStudent && user._id) {
+      fetchUserEnrolledCourses();
+    }
+  }, [isAuth, isStudent, user]);
+
+  useEffect(() => {
+    setCourses((prevCourses) =>
+      prevCourses.map((course) => {
+        const isEnrolled = enrolledCourses.some(
+          (enrollment) => enrollment?.course?._id === course?._id
+        );
+        return { ...course, isEnrolled };
+      })
+    );
+  }, [enrolledCourses]);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this course?")) {
@@ -197,22 +231,47 @@ const Courses = () => {
                     >
                       <FaTrash /> Delete
                     </button>
+                    {/* Link to add new lecture in course */}
+                    <Link
+                      to={`/course/${course._id}/lectures/add`}
+                      className="btn-edit"
+                    >
+                      Add Lecture
+                    </Link>
                   </div>
                 )}
+
+                <Link
+                  to={`/course/${course._id}/lectures/add`}
+                  className="btn-edit"
+                >
+                  Add Lecture
+                </Link>
                 {isStudent && (
                   <div className="student-actions">
-                    <Link
-                      to={`/course/${course._id}/enroll`}
-                      className="btn-enroll"
-                    >
-                      Enroll Now
-                    </Link>
-                    <Link
-                      to={`/course/${course._id}/feedback`}
-                      className="btn-feedback"
-                    >
-                      <FaComments /> Feedback
-                    </Link>
+                    {!course?.isEnrolled ? (
+                      <Link
+                        to={`/course/${course._id}/enroll`}
+                        className="btn-enroll"
+                      >
+                        Enroll Now
+                      </Link>
+                    ) : (
+                      <Link
+                        to={`/course/${course._id}/learn`}
+                        className="btn-enroll"
+                      >
+                        Continue Learning
+                      </Link>
+                    )}
+                    {course?.isEnrolled && (
+                      <Link
+                        to={`/course/${course._id}/feedback`}
+                        className="btn-feedback"
+                      >
+                        <FaComments /> Feedback
+                      </Link>
+                    )}
                   </div>
                 )}
               </div>

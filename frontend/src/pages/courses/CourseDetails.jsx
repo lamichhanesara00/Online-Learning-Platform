@@ -10,6 +10,8 @@ import {
   FaRegBookmark,
   FaBookmark,
   FaArrowLeft,
+  FaList,
+  FaCheckCircle,
 } from "react-icons/fa";
 import { useUserData } from "../../context/UserContext";
 import "./courseDetails.css";
@@ -17,12 +19,13 @@ import "./courseDetails.css";
 const CourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAuth, userRole } = useUserData();
+  const { isAuth, userRole, user } = useUserData();
   const [course, setCourse] = useState(null);
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [enrolled, setEnrolled] = useState(false);
+  const [enrollmentLoading, setEnrollmentLoading] = useState(false);
   const [saved, setSaved] = useState(false);
 
   // Fetch course details and feedback
@@ -42,10 +45,17 @@ const CourseDetails = () => {
         );
         setFeedback(feedbackResponse.data);
 
-        // Check if user is enrolled (in a real app, this would be a separate API call)
-        // This is a placeholder - replace with actual enrollment check logic
-        const checkEnrollment = localStorage.getItem(`enrolled_${id}`);
-        setEnrolled(!!checkEnrollment);
+        // Check if user is enrolled if they're logged in
+        if (isAuth && user._id) {
+          try {
+            const enrollmentResponse = await axios.get(
+              `http://localhost:5000/api/enrollments/check/${user._id}/${id}`
+            );
+            setEnrolled(enrollmentResponse.data.isEnrolled);
+          } catch (err) {
+            console.error("Error checking enrollment status:", err);
+          }
+        }
 
         // Check if course is saved (in a real app, this would be a separate API call)
         // This is a placeholder - replace with actual saved courses check
@@ -64,20 +74,54 @@ const CourseDetails = () => {
     if (id) {
       fetchCourseDetails();
     }
-  }, [id]);
+  }, [id, isAuth, user]);
 
+  // Calculate average rating
   const calculateAverageRating = () => {
     if (!feedback || feedback.length === 0) return 0;
     const sum = feedback.reduce((total, item) => total + item.rating, 0);
     return (sum / feedback.length).toFixed(1);
   };
 
-  const handleEnroll = () => {
+  // Calculate total lecture duration
+  const calculateTotalLectureDuration = () => {
+    if (!course?.lectures || course.lectures.length === 0) return 0;
+    return course.lectures.reduce(
+      (total, lecture) => total + (lecture.duration || 0),
+      0
+    );
+  };
+
+  // Handle enrollment
+  const handleEnroll = async () => {
     if (!isAuth) {
       navigate("/login");
       return;
     }
-    navigate(`/course/${id}/enroll`);
+
+    try {
+      setEnrollmentLoading(true);
+
+      // Create enrollment
+      const response = await axios.post(
+        "http://localhost:5000/api/enrollments",
+        {
+          courseId: id,
+          userId: userId,
+        }
+      );
+
+      setEnrolled(true);
+
+      // Show success notification or redirect to course content
+      alert("Successfully enrolled in the course!");
+      navigate(`/course/${id}/learn`);
+    } catch (error) {
+      console.error("Enrollment error:", error);
+      alert(error.response?.data?.message || "Failed to enroll in the course");
+    } finally {
+      setEnrollmentLoading(false);
+    }
   };
 
   // Handle save/bookmark course
@@ -216,6 +260,53 @@ const CourseDetails = () => {
             </ul>
           </section>
 
+          <section className="course-lectures">
+            <div className="lectures-header">
+              <h2>Course Content</h2>
+              <div className="lectures-stats">
+                <span>{course.lectures?.length || 0} lectures</span>
+                <span>•</span>
+                <span>{calculateTotalLectureDuration()} minutes</span>
+              </div>
+            </div>
+
+            {!course.lectures || course.lectures.length === 0 ? (
+              <div className="no-lectures">
+                <FaList className="no-lectures-icon" />
+                <p>No lectures available for this course yet.</p>
+              </div>
+            ) : (
+              <div className="lectures-list">
+                {course.lectures.map((lecture, index) => (
+                  <div key={lecture._id} className="lecture-item">
+                    <div className="lecture-item-left">
+                      <div className="lecture-number">{index + 1}</div>
+                      <div className="lecture-info">
+                        <h4 className="lecture-title">{lecture.title}</h4>
+                        <p className="lecture-description">
+                          {lecture.description}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="lecture-item-right">
+                      <span className="lecture-duration">
+                        {lecture.duration} min
+                      </span>
+                      <Link
+                        to={`/lecture/${lecture._id}`}
+                        className="lecture-link"
+                      >
+                        {userRole === "student" && !enrolled
+                          ? "Preview"
+                          : "View Lecture"}
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
           <section className="course-requirements">
             <h2>Requirements</h2>
             <ul>
@@ -287,6 +378,12 @@ const CourseDetails = () => {
                 </span>
               </li>
               <li>
+                <FaList />
+                <span>
+                  <strong>{course.lectures?.length || 0}</strong> lectures
+                </span>
+              </li>
+              <li>
                 <FaCalendarAlt />
                 <span>
                   <strong>Lifetime</strong> access
@@ -301,20 +398,35 @@ const CourseDetails = () => {
             </ul>
 
             {userRole === "student" ? (
-              <button className="enroll-button" onClick={handleEnroll}>
-                {course.price === 0
-                  ? "Enroll Now - Free"
-                  : `Enroll Now - $${course.price}`}
-              </button>
-            ) : (
+              enrolled ? (
+                <Link
+                  to={`/course/${id}/learn`}
+                  className="access-course-button"
+                >
+                  <FaCheckCircle /> Continue Learning
+                </Link>
+              ) : (
+                <Link className="enroll-button" to={`/course/${id}/enroll`}>
+                  {course.price === 0
+                    ? "Enroll Now - Free"
+                    : `Enroll Now - $${course.price}`}
+                </Link>
+              )
+            ) : isAuth ? (
               <Link to={`/course/${id}/learn`} className="access-course-button">
                 Access Course
               </Link>
+            ) : (
+              <Link to={`/login`} className="access-course-button">
+                Login to Access
+              </Link>
             )}
 
-            <div className="guarantee">
-              <p>30-Day Money-Back Guarantee</p>
-            </div>
+            {course.price > 0 && (
+              <div className="guarantee">
+                <p>30-Day Money-Back Guarantee</p>
+              </div>
+            )}
           </div>
 
           <div className="instructor-card">

@@ -1,14 +1,20 @@
 import express from "express";
-import { getStudentProgress, updateStudentProgress } from "../controllers/progress.js";
-import { verifyUser } from "../middlewares/authMiddleware.js";  // Import auth middleware
-import { verifyProgress } from "../middlewares/progressMiddleware.js";  // Import progress middleware
+import {
+  getStudentProgress,
+  updateStudentProgress,
+  getStudentAllProgress,
+  trackLectureTime,
+} from "../controllers/progress.js";
+import { verifyProgress } from "../middlewares/progressMiddleware.js"; // Import progress middleware
 
 const router = express.Router();
 
-// ✅ Get Student Progress (uses the verifyProgress middleware)
-router.get("/track/:studentId/:courseId", verifyUser, verifyProgress, getStudentProgress);
+router.get("/student/:studentId", getStudentAllProgress);
 
-// ✅ Update Student Progress
-router.post("/update", verifyUser, updateStudentProgress);
+router.get("/:studentId/:courseId", getStudentProgress);
+
+router.post("/update", updateStudentProgress);
+
+router.post("/track-time", trackLectureTime);
 
 export default router;

@@ -1,25 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useUserData } from "../../context/UserContext";
 import { FaUserCircle, FaSignOutAlt, FaChevronDown } from "react-icons/fa";
 import "./header.css";
 
 const Header = () => {
-  const { isAuth, user, logoutUser } = useUserData();
-  const [userRole, setUserRole] = useState(localStorage.getItem("userRole"));
+  const { isAuth, user, logoutUser, userRole } = useUserData();
   const [showLoginDropdown, setShowLoginDropdown] = useState(false);
   const [showRegisterDropdown, setShowRegisterDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
-
-  // Update state if userRole changes in localStorage
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setUserRole(localStorage.getItem("userRole"));
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
 
   const handleLogout = () => {
     logoutUser();
@@ -38,12 +27,12 @@ const Header = () => {
         <Link to="/about">About</Link>
 
         {/* Show appropriate dashboard based on role */}
-        {userRole === "teacher" && (
+        {/* {userRole === "teacher" && (
           <Link to="/teacher-dashboard">Teacher Dashboard</Link>
-        )}
-        {userRole === "student" && (
+        )} */}
+        {/* {userRole === "student" && (
           <Link to="/student-dashboard">Student Dashboard</Link>
-        )}
+        )} */}
         {userRole === "admin" && (
           <Link to="/admin/dashboard">Admin Dashboard</Link>
         )}
@@ -71,9 +60,6 @@ const Header = () => {
                   onClick={() => setShowUserDropdown(false)}
                 >
                   My Courses
-                </Link>
-                <Link to="/settings" onClick={() => setShowUserDropdown(false)}>
-                  Settings
                 </Link>
                 <button onClick={handleLogout} className="logout-btn">
                   <FaSignOutAlt /> Logout

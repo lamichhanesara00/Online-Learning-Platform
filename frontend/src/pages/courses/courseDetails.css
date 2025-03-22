@@ -462,6 +462,153 @@
   color: #718096;
 }
 
+/* Course lectures section */
+.lectures-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.lectures-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #718096;
+}
+
+.no-lectures {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  color: #a0aec0;
+}
+
+.no-lectures-icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+  color: #cbd5e0;
+}
+
+.lectures-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lecture-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f7fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.lecture-item:hover {
+  border-color: #cbd5e0;
+  background: #edf2f7;
+  transform: translateY(-2px);
+}
+
+.lecture-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.lecture-number {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #6a11cb;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.lecture-icon {
+  color: #6a11cb;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lecture-info {
+  flex: 1;
+}
+
+.lecture-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0 0 5px;
+}
+
+.lecture-description {
+  font-size: 14px;
+  color: #718096;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lecture-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.lecture-duration {
+  font-size: 12px;
+  color: #718096;
+  background: #edf2f7;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.lecture-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2575fc;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.lecture-link:hover {
+  color: #6a11cb;
+  text-decoration: underline;
+}
+
+/* Responsive styles for lectures */
+@media (max-width: 768px) {
+  .lecture-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .lecture-item-right {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
 /* Responsive styles */
 @media (max-width: 1024px) {
   .course-header {

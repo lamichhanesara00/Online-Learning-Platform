@@ -101,7 +101,27 @@ const EnrollForm = () => {
   };
 
   // Handle payment with eSewa
-  const handleEsewaPayment = () => {
+  const handleEsewaPayment = async () => {
+    try {
+      setProcessingPayment(true);
+      // Create enrollment
+      const response = await axios.post(
+        "http://localhost:5000/api/enrollments",
+        {
+          courseId: id,
+          userId: user._id,
+        }
+      );
+      // Show success notification or redirect to course content
+      alert("Successfully enrolled in the course!");
+      setStep(3);
+    } catch (error) {
+      console.error("Enrollment error:", error);
+      alert(error.response?.data?.message || "Failed to enroll in the course");
+    } finally {
+      setProcessingPayment(false);
+    }
+    return;
     setProcessingPayment(true);
     setError(null);
 

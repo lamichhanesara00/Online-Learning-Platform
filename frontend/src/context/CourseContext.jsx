@@ -15,10 +15,13 @@ export const CourseContextProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await axios.get(`${server}/api/course/all`); // ✅ Fetching all courses
+      const { data } = await axios.get(`${server}/api/courses/all`); // ✅ Fetching all courses
       setCourses(data);
     } catch (error) {
-      console.error("❌ Error fetching courses:", error.response?.data || error.message);
+      console.error(
+        "❌ Error fetching courses:",
+        error.response?.data || error.message
+      );
       setError("Failed to load courses.");
     } finally {
       setLoading(false);
@@ -30,10 +33,15 @@ export const CourseContextProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await axios.get(`${server}/api/course/${courseId}/lectures`); // ✅ Fetching lectures for the course
+      const { data } = await axios.get(
+        `${server}/api/course/${courseId}/lectures`
+      ); // ✅ Fetching lectures for the course
       setLectures(data);
     } catch (error) {
-      console.error("❌ Error fetching lectures:", error.response?.data || error.message);
+      console.error(
+        "❌ Error fetching lectures:",
+        error.response?.data || error.message
+      );
       setError("Failed to load lectures.");
     } finally {
       setLoading(false);
@@ -46,7 +54,9 @@ export const CourseContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <CourseContext.Provider value={{ courses, lectures, loading, error, fetchCourses, fetchLectures }}>
+    <CourseContext.Provider
+      value={{ courses, lectures, loading, error, fetchCourses, fetchLectures }}
+    >
       {children}
     </CourseContext.Provider>
   );
@@ -56,7 +66,9 @@ export const CourseContextProvider = ({ children }) => {
 export const useCourseData = () => {
   const context = useContext(CourseContext);
   if (!context) {
-    throw new Error("useCourseData must be used within a CourseContextProvider");
+    throw new Error(
+      "useCourseData must be used within a CourseContextProvider"
+    );
   }
   return context;
 };

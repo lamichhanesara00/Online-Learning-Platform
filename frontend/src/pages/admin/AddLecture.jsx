@@ -17,7 +17,7 @@ const AddLecture = () => {
   useEffect(() => {
     const fetchLectures = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/admin/get-lectures");
+        const response = await axios.get("http://localhost:5000/api/lectures");
         setLectures(response.data);
         setLoading(false);
       } catch (error) {
@@ -80,9 +80,12 @@ const AddLecture = () => {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("adminToken");
-      await axios.delete(`http://localhost:5000/api/admin/delete-lecture/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `http://localhost:5000/api/admin/delete-lecture/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setLectures(lectures.filter((lecture) => lecture._id !== id));
       alert("Lecture deleted successfully!");
     } catch (error) {
@@ -94,7 +97,9 @@ const AddLecture = () => {
   return (
     <div className="add-lecture-container">
       <h2>{editMode ? "Edit Lecture" : "Add New Lecture"}</h2>
-      <p className="instruction-text">Please enter the lecture title and description below.</p>
+      <p className="instruction-text">
+        Please enter the lecture title and description below.
+      </p>
 
       <form onSubmit={handleSubmit}>
         <label>Title:</label>
@@ -116,7 +121,9 @@ const AddLecture = () => {
           placeholder="Provide a brief summary of the lecture"
         ></textarea>
 
-        <button type="submit">{editMode ? "Update Lecture" : "Add Lecture"}</button>
+        <button type="submit">
+          {editMode ? "Update Lecture" : "Add Lecture"}
+        </button>
       </form>
 
       <h3>Lecture List</h3>
@@ -131,8 +138,18 @@ const AddLecture = () => {
               <h4>{lecture.title}</h4>
               <p>{lecture.description}</p>
               <div className="lecture-actions">
-                <button className="edit-btn" onClick={() => handleEdit(lecture)}>Edit</button>
-                <button className="delete-btn" onClick={() => handleDelete(lecture._id)}>Delete</button>
+                <button
+                  className="edit-btn"
+                  onClick={() => handleEdit(lecture)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="delete-btn"
+                  onClick={() => handleDelete(lecture._id)}
+                >
+                  Delete
+                </button>
               </div>
             </li>
           ))}
