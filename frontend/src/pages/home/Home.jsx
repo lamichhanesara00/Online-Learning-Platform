@@ -65,197 +65,47 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {/* Hero Section */}
-      <div className="hero-section">
-        <div className="hero-content">
-          <h1>Transform Your Future with Online Learning</h1>
-          <p>
-            Access high-quality courses taught by industry experts and advance
-            your career
-          </p>
+      <h1>Welcome to Our Learning Platform</h1>
+      <p>Explore, Learn, and Grow with Us</p>
+      
+      <Link to="/register">
+        <button className="get-started-btn">Get Started</button>
+      </Link>
 
-          {!isAuth ? (
-            <div className="hero-buttons">
-              <Link to="/register" className="primary-button">
-                Get Started
-              </Link>
-              <Link to="/courses" className="secondary-button">
-                Browse Courses
-              </Link>
-            </div>
-          ) : (
-            <div className="hero-buttons">
-              <Link to="/my-courses" className="primary-button">
-                My Learning
-              </Link>
-              <Link to="/courses" className="secondary-button">
-                Explore More Courses
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Main content section - shows different views for logged in vs non-logged in users */}
-      {isAuth && user ? (
-        // Content for authenticated users
-        <div className="user-dashboard-section">
-          <div className="section-header">
-            <h2>Continue Learning</h2>
-            <Link to="/my-courses" className="see-all-link">
-              See all my courses <FaArrowRight />
-            </Link>
-          </div>
-
-          {enrolledCourses.length === 0 ? (
-            <div className="no-courses-message">
-              <FaGraduationCap className="icon" />
-              <h3>You haven't enrolled in any courses yet</h3>
-              <p>Explore our catalog and start your learning journey today!</p>
-              <Link to="/courses" className="primary-button">
-                Browse Courses
-              </Link>
-            </div>
-          ) : (
-            <div className="enrolled-courses-grid">
-              {enrolledCourses.slice(0, 3).map((item) => {
-                const { enrollment, progress } = item;
-                const course = enrollment.course;
-
-                return (
-                  <div key={course._id} className="enrolled-course-card">
-                    <div className="course-image">
-                      <img
-                        src={
-                          course.image?.startsWith("http")
-                            ? course.image
-                            : `http://localhost:5000/${course.image}`
-                        }
-                        alt={course.title}
-                        onError={(e) => {
-                          e.target.src =
-                            "https://via.placeholder.com/320x180?text=Course+Image";
-                        }}
-                      />
-                      <div className="progress-indicator">
-                        <div className="progress-bar">
-                          <div
-                            className="progress-fill"
-                            style={{ width: `${progress.progressPercentage}%` }}
-                          ></div>
-                        </div>
-                        <span>{progress.progressPercentage}% complete</span>
-                      </div>
-                    </div>
-
-                    <div className="course-content">
-                      <h3>{course.title}</h3>
-                      <div className="course-meta">
-                        <span>
-                          <FaChalkboardTeacher /> {course.instructor}
-                        </span>
-                        <span>
-                          <FaClock /> {course.duration} hours
-                        </span>
-                      </div>
-                      <Link
-                        to={`/course/${course._id}/learn`}
-                        className="continue-button"
-                      >
-                        Continue Learning
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="featured-courses-section">
-          <div className="section-header">
-            <h2>Featured Courses</h2>
-            <Link to="/courses" className="see-all-link">
-              See all courses <FaArrowRight />
-            </Link>
-          </div>
-
-          <div className="courses-grid">
-            {featuredCourses.length === 0 ? (
-              <p className="no-content-message">
-                No courses available at the moment.
-              </p>
-            ) : (
-              featuredCourses.map((course) => (
-                <div key={course._id} className="course-card">
-                  <div className="course-image">
-                    <img
-                      src={
-                        course.image?.startsWith("http")
-                          ? course.image
-                          : `http://localhost:5000/${course.image}`
-                      }
-                      alt={course.title}
-                      onError={(e) => {
-                        e.target.src =
-                          "https://via.placeholder.com/320x180?text=Course+Image";
-                      }}
-                    />
-
-                    {course.price === 0 ? (
-                      <div className="course-tag free">Free</div>
-                    ) : (
-                      <div className="course-tag premium">${course.price}</div>
-                    )}
-                  </div>
-
-                  <div className="course-content">
-                    <h3>{course.title}</h3>
-                    <div className="course-meta">
-                      <span>
-                        <FaChalkboardTeacher /> {course.instructor}
-                      </span>
-                      <span>
-                        <FaClock /> {course.duration} hours
-                      </span>
-                      <span>
-                        <FaStar className="star" /> 4.5
-                      </span>
-                    </div>
-
-                    <div className="lectures-info">
-                      {course.lectures?.length || 0} lectures •{" "}
-                      {course.lectures?.reduce(
-                        (total, lecture) => total + (lecture.duration || 0),
-                        0
-                      )}{" "}
-                      minutes
-                    </div>
-
-                    <Link
-                      to={`/course/${course._id}`}
-                      className="view-course-button"
-                    >
-                      View Course
-                    </Link>
-                  </div>
+      {/* Student Progress Section */}
+      <div className="progress-section">
+        <h2>📚 Your Learning Progress</h2>
+        {loading ? (
+          <p>Loading progress...</p>
+        ) : error ? (
+          <p className="error-message">{error}</p>
+        ) : (
+          <div className="progress-container">
+            {featuredCourses.length > 0 ? (
+              featuredCourses.map((lecture) => (
+                <div key={lecture._id} className="lecture-progress">
+                  <h4>{lecture.title}</h4>
+                  <p>{lecture.description}</p>
+                  <div className="progress-bar">
+                    <div
+                      className="progress-fill"
+                      style={{ width: `${90 || 0}%` }}
+                    ></div>
+                  </div> 
+                <p>{90 || 0}% Completed</p>
                 </div>
               ))
+            ) : (
+              <p>No lectures available yet.</p>
             )}
           </div>
+        )}
+      </div>
 
-          <div className="see-more-container">
-            <Link to="/courses" className="see-more-button">
-              Browse All Courses <FaArrowRight />
-            </Link>
-          </div>
-        </div>
-      )}
-
+      {/* Displaying the Testimonial component */}
       <Testimonial />
-
     </div>
-  );
+  )
 };
 
 export default Home;
