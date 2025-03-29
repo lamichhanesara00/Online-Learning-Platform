@@ -14,14 +14,14 @@ const About = () => {
 
         <div className="about-content">
           <div className="about-box">
-            <h2>🚀 Our Mission</h2>
+            <h2>Our Mission</h2>
             <p>
               To make education accessible and engaging for everyone through technology-driven learning.
             </p>
           </div>
 
           <div className="about-box">
-            <h2>📚 What We Offer</h2>
+            <h2> What We Offer</h2>
             <ul>
               <li>Expert-led online courses</li>
               <li>Interactive quizzes and exercises</li>
@@ -31,7 +31,7 @@ const About = () => {
           </div>
 
           <div className="about-box">
-            <h2>🌎 Join Our Community</h2>
+            <h2>Join Our Community</h2>
             <p>
               Become part of a growing network of learners and professionals who are mastering new skills
               every day!

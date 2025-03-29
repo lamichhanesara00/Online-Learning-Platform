@@ -1,6 +1,7 @@
 import CryptoJS from "crypto-js";
 
-const ESEWA_LINK = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+/* const ESEWA_LINK = "https://rc-epay.esewa.com.np/api/epay/main/v2/form"; */
+
 
 export const createSignature = (message) => {
   const secret = "8gBm/:&EnhH.1/q";

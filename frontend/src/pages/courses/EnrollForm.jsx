@@ -20,7 +20,6 @@ import "./enrollForm.css";
 
 const EnrollForm = () => {
   const { id } = useParams();
-  // grab query
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { isAuth, user } = useUserData();
@@ -35,10 +34,9 @@ const EnrollForm = () => {
   });
   const [step, setStep] = useState(
     searchParams.get("step") ? parseInt(searchParams.get("step")) : 1
-  ); // 1: Info, 2: Payment, 3: Confirmation
+  );
   const [processingPayment, setProcessingPayment] = useState(false);
 
-  // Fetch course details
   useEffect(() => {
     const fetchCourse = async () => {
       if (!isAuth) {
@@ -53,7 +51,6 @@ const EnrollForm = () => {
         );
         setCourse(response.data);
 
-        // Pre-fill form with user data if available
         if (user) {
           setFormData((prev) => ({
             ...prev,
@@ -72,7 +69,6 @@ const EnrollForm = () => {
     fetchCourse();
   }, [id, isAuth, navigate, user]);
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -81,11 +77,9 @@ const EnrollForm = () => {
     });
   };
 
-  // Move to payment step
   const handleContinueToPayment = (e) => {
     e.preventDefault();
 
-    // Validate form fields
     if (!formData.fullName || !formData.email || !formData.phone) {
       setError("Please fill in all required fields");
       return;
@@ -100,11 +94,11 @@ const EnrollForm = () => {
     setStep(2);
   };
 
-  // Handle payment with eSewa
   const handleEsewaPayment = async () => {
     try {
       setProcessingPayment(true);
-      // Create enrollment
+
+      // Create enrollment in backend first
       const response = await axios.post(
         "http://localhost:5000/api/enrollments",
         {
@@ -112,45 +106,44 @@ const EnrollForm = () => {
           userId: user._id,
         }
       );
-      // Show success notification or redirect to course content
+
+      // Alert and go to confirmation step
       alert("Successfully enrolled in the course!");
       setStep(3);
+
+      // 🟡 Payment logic (eSewa) commented out below for now
+      /*
+      const signature = createSignature(
+        `total_amount=${course.price},transaction_uuid=${id},product_code=EPAYTEST`
+      );
+
+      const paymentDetails = {
+        amount: course.price.toString(),
+        failure_url: "https://developer.esewa.com.np/failure",
+        product_delivery_charge: "0",
+        product_service_charge: "0",
+        product_code: "EPAYTEST",
+        signed_field_names: "total_amount,transaction_uuid,product_code",
+        signature,
+        success_url: "https://developer.esewa.com.np/success",
+        tax_amount: "0",
+        total_amount: course.price.toString(),
+        transaction_uuid: "24102899",
+      };
+
+      console.log("🚀 ~ handleEsewaPayment ~ paymentDetails:", paymentDetails);
+
+      esewaCall(paymentDetails);
+      */
+
     } catch (error) {
       console.error("Enrollment error:", error);
       alert(error.response?.data?.message || "Failed to enroll in the course");
     } finally {
       setProcessingPayment(false);
     }
-    return;
-    setProcessingPayment(true);
-    setError(null);
-
-    const signature = createSignature(
-      `total_amount=${course.price},transaction_uuid=${id},product_code=EPAYTEST`
-    );
-
-    const paymentDetails = {
-      amount: course.price.toString(),
-      failure_url: "https://developer.esewa.com.np/failure",
-      product_delivery_charge: "0",
-      product_service_charge: "0",
-      product_code: "EPAYTEST",
-      signed_field_names: "total_amount,transaction_uuid,product_code",
-      signature,
-      success_url: "https://developer.esewa.com.np/success",
-      tax_amount: "0",
-      total_amount: course.price.toString(),
-      transaction_uuid: "24102899",
-    };
-    console.log("🚀 ~ handleEsewaPayment ~ paymentDetails:", paymentDetails);
-
-    esewaCall(paymentDetails);
-
-    // First make post request to backend to store the payment details
-    //  with those details, make a post request to eSewa
   };
 
-  // Handle free course enrollment
   const handleFreeEnrollment = () => {
     setProcessingPayment(true);
     setError(null);
@@ -162,7 +155,6 @@ const EnrollForm = () => {
     }, 1000);
   };
 
-  // Go to course after successful enrollment
   const handleGoToCourse = () => {
     navigate(`/course/${id}/learn`);
   };
@@ -188,7 +180,6 @@ const EnrollForm = () => {
     );
   }
 
-  // Render enrollment form (step 1)
   const renderEnrollmentForm = () => (
     <div className="enrollment-form-container">
       <h2>Enrollment Information</h2>
@@ -261,7 +252,6 @@ const EnrollForm = () => {
     </div>
   );
 
-  // Render payment options (step 2)
   const renderPaymentOptions = () => (
     <div className="payment-options-container">
       <h2>Select Payment Method</h2>
@@ -324,7 +314,6 @@ const EnrollForm = () => {
     </div>
   );
 
-  // Render success confirmation (step 3)
   const renderConfirmation = () => (
     <div className="enrollment-success-container">
       <div className="success-icon">
