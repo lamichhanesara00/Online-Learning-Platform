@@ -51,6 +51,8 @@ const Home = () => {
     fetchData();
   }, [isAuth, user]);
 
+  console.log(enrolledCourses);
+
   const featuredCourses = courses.slice(0, 4);
 
   // Render loading state
@@ -67,45 +69,64 @@ const Home = () => {
     <div className="home-container">
       <h1>Welcome to Our Learning Platform</h1>
       <p>Explore, Learn, and Grow with Us</p>
-      
+
       <Link to="/register">
         <button className="get-started-btn">Get Started</button>
       </Link>
 
       {/* Student Progress Section */}
-      <div className="progress-section">
-        <h2>📚 Your Learning Progress</h2>
-        {loading ? (
-          <p>Loading progress...</p>
-        ) : error ? (
-          <p className="error-message">{error}</p>
-        ) : (
-          <div className="progress-container">
-            {featuredCourses.length > 0 ? (
-              featuredCourses.map((lecture) => (
-                <div key={lecture._id} className="lecture-progress">
-                  <h4>{lecture.title}</h4>
-                  <p>{lecture.description}</p>
-                  <div className="progress-bar">
-                    <div
-                      className="progress-fill"
-                      style={{ width: `${90 || 0}%` }}
-                    ></div>
-                  </div> 
-                <p>{90 || 0}% Completed</p>
-                </div>
-              ))
-            ) : (
-              <p>No lectures available yet.</p>
-            )}
-          </div>
-        )}
-      </div>
+      {isAuth ? (
+        <div className="progress-section">
+          <h2>📚 Your Learning Progress</h2>
+          {loading ? (
+            <p>Loading progress...</p>
+          ) : error ? (
+            <p className="error-message">{error}</p>
+          ) : (
+            <div className="progress-container">
+              {enrolledCourses.length > 0 ? (
+                enrolledCourses.map((item) => (
+                  <div key={item.enrollment._id} className="lecture-progress">
+                    <h4>{item.enrollment.course.title}</h4>
+                    <div className="progress-bar">
+                      <div
+                        className="progress-fill"
+                        style={{
+                          width: `${item.progress.progressPercentage}%`,
+                        }}
+                      ></div>
+                    </div>
+                    <p>{item.progress.progressPercentage}% Completed</p>
+                    <p>
+                      Completed {item.progress.completedLectures} of{" "}
+                      {item.progress.totalLectures} lectures
+                    </p>
+                    {item.progress.nextLectureToWatch && (
+                      <div className="next-lecture">
+                        <p>
+                          Next Lecture: {item.progress.nextLectureToWatch.title}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p>You haven't enrolled in any course yet.</p>
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div>
+          <h2>👩‍🎓 Enroll in Courses</h2>
+          <p>To track your progress</p>
+        </div>
+      )}
 
       {/* Displaying the Testimonial component */}
       <Testimonial />
     </div>
-  )
+  );
 };
 
 export default Home;

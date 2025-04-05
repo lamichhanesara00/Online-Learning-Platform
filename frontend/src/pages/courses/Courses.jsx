@@ -240,13 +240,6 @@ const Courses = () => {
                     </Link>
                   </div>
                 )}
-
-                <Link
-                  to={`/course/${course._id}/lectures/add`}
-                  className="btn-edit"
-                >
-                  Add Lecture
-                </Link>
                 {isStudent && (
                   <div className="student-actions">
                     {!course?.isEnrolled ? (
