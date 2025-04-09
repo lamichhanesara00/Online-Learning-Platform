@@ -292,14 +292,14 @@ const EnrollForm = () => {
               </>
             ) : (
               <>
-                <MdPayment className="esewa-icon" />
-                <span>Pay with Esewa</span>
+                <MdPayment className="Khalti-icon" />
+                <span>Pay with Khalti</span>
               </>
             )}
           </button>
 
           <div className="secure-payment">
-            <FaLock /> Secure payment processed by eSewa
+            <FaLock /> Secure payment processed by Khalti
           </div>
         </div>
       )}
