@@ -15,7 +15,6 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import { MdPayment } from "react-icons/md";
-import { esewaCall, createSignature } from "../../utils/payment";
 import "./enrollForm.css";
 
 const EnrollForm = () => {
@@ -36,6 +35,7 @@ const EnrollForm = () => {
     searchParams.get("step") ? parseInt(searchParams.get("step")) : 1
   );
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [paymentUrl, setPaymentUrl] = useState(null);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -94,55 +94,92 @@ const EnrollForm = () => {
     setStep(2);
   };
 
-  const handleEsewaPayment = async () => {
+  const handleKhaltiPayment = async () => {
     try {
       setProcessingPayment(true);
+      setError(null);
 
-      // Create enrollment in backend first
+      // Call the Khalti payment initiation API
       const response = await axios.post(
-        "http://localhost:5000/api/enrollments",
+        "http://localhost:5000/api/payments/khalti/initiate",
         {
           courseId: id,
-          userId: user._id,
+          user: user,
         }
       );
 
-      // Alert and go to confirmation step
-      alert("Successfully enrolled in the course!");
-      setStep(3);
-
-      // 🟡 Payment logic (eSewa) commented out below for now
-      /*
-      const signature = createSignature(
-        `total_amount=${course.price},transaction_uuid=${id},product_code=EPAYTEST`
-      );
-
-      const paymentDetails = {
-        amount: course.price.toString(),
-        failure_url: "https://developer.esewa.com.np/failure",
-        product_delivery_charge: "0",
-        product_service_charge: "0",
-        product_code: "EPAYTEST",
-        signed_field_names: "total_amount,transaction_uuid,product_code",
-        signature,
-        success_url: "https://developer.esewa.com.np/success",
-        tax_amount: "0",
-        total_amount: course.price.toString(),
-        transaction_uuid: "24102899",
-      };
-
-      console.log("🚀 ~ handleEsewaPayment ~ paymentDetails:", paymentDetails);
-
-      esewaCall(paymentDetails);
-      */
-
+      if (response.data.success) {
+        // Redirect to Khalti payment page
+        window.location.href = response.data.data.paymentUrl;
+      } else {
+        setError(response.data.message || "Failed to initiate payment");
+      }
     } catch (error) {
-      console.error("Enrollment error:", error);
-      alert(error.response?.data?.message || "Failed to enroll in the course");
+      console.error("Payment initiation error:", error);
+      setError(
+        error.response?.data?.error ||
+          error.response?.data?.message ||
+          "Failed to process payment"
+      );
     } finally {
       setProcessingPayment(false);
     }
   };
+
+  // Add a new function to verify payment status
+  const verifyPayment = async (pidx) => {
+    try {
+      setProcessingPayment(true);
+
+      const response = await axios.post(
+        "http://localhost:5000/api/payments/khalti/verify",
+        {
+          pidx: pidx,
+          courseId: id,
+        }
+      );
+
+      if (response.data.success) {
+        if (response.data.data.payment.status === "completed") {
+          setStep(3); // Move to confirmation step
+        } else {
+          setError(
+            "Your payment is still being processed. Please try again later."
+          );
+        }
+      } else {
+        setError(response.data.message || "Payment verification failed");
+      }
+    } catch (error) {
+      console.error("Payment verification error:", error);
+      setError(
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          "Failed to verify payment"
+      );
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
+
+  // Add a useEffect to check for payment confirmations from redirects
+  useEffect(() => {
+    const checkPaymentStatus = async () => {
+      const pidx = searchParams.get("pidx");
+      const status = searchParams.get("status");
+
+      if (pidx && status) {
+        // Payment return from Khalti
+        if (status === "Completed") {
+          await verifyPayment(pidx);
+        } else {
+          setError(`Payment ${status.toLowerCase()}. Please try again.`);
+        }
+      }
+    };
+
+    checkPaymentStatus();
+  }, [searchParams]);
 
   const handleFreeEnrollment = () => {
     setProcessingPayment(true);
@@ -264,9 +301,21 @@ const EnrollForm = () => {
           <span>Course Fee:</span>
           <span>{course.price === 0 ? "Free" : `$${course.price}`}</span>
         </div>
+        <div className="summary-row">
+          <span>Tax (13%):</span>
+          <span>
+            {course.price === 0
+              ? "Free"
+              : `$${(course.price * 0.13).toFixed(2)}`}
+          </span>
+        </div>
         <div className="summary-row total">
           <span>Total:</span>
-          <span>{course.price === 0 ? "Free" : `$${course.price}`}</span>
+          <span>
+            {course.price === 0
+              ? "Free"
+              : `$${(course.price * 1.13).toFixed(2)}`}
+          </span>
         </div>
       </div>
 
@@ -281,8 +330,8 @@ const EnrollForm = () => {
       ) : (
         <div className="payment-methods">
           <button
-            className="esewa-button"
-            onClick={handleEsewaPayment}
+            className="khalti-button"
+            onClick={handleKhaltiPayment}
             disabled={processingPayment}
           >
             {processingPayment ? (
@@ -292,7 +341,7 @@ const EnrollForm = () => {
               </>
             ) : (
               <>
-                <MdPayment className="Khalti-icon" />
+                <MdPayment className="khalti-icon" />
                 <span>Pay with Khalti</span>
               </>
             )}

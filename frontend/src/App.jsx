@@ -25,6 +25,8 @@ import LectureDetails from "./pages/courses/LectureDetails";
 import UpdateLecture from "./pages/courses/UpdateLecture";
 import MyCourses from "./pages/courses/MyCourses";
 import ContinueLearning from "./pages/courses/ContinueLearning";
+import Chat from "./pages/chat/Chat";
+import StudentChat from "./pages/studentChat/StudentChat";
 
 //  Protect Admin Routes
 const PrivateRoute = ({ children }) => {
@@ -36,6 +38,12 @@ const PrivateRoute = ({ children }) => {
 const TeacherRoute = ({ children }) => {
   const isTeacher = localStorage.getItem("userRole") === "teacher";
   return isTeacher ? children : <Navigate to="/login" />;
+};
+
+const ChatComp = () => {
+  const isAuthenticated = localStorage.getItem("userRole");
+  const isStudent = localStorage.getItem("userRole") === "student";
+  return isAuthenticated && isStudent ? <StudentChat /> : <Chat />;
 };
 
 const App = () => {
@@ -50,6 +58,7 @@ const App = () => {
         <Route path="/verify-otp" element={<Verify />} />
         <Route path="/about" element={<About />} />
         <Route path="/my-courses" element={<MyCourses />} />
+        <Route path="/chat" element={<ChatComp />} />
         <Route path="/account" element={<Account />} />
         <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/student-login" element={<StudentLogin />} />
@@ -97,7 +106,7 @@ const App = () => {
         />
       </Routes>
       <Footer />
-      <ChatBox />
+      {/* <ChatBox /> */}
     </>
   );
 };

@@ -1,7 +1,40 @@
 import Enrollment from "../models/Enrollment.js";
 import { Course } from "../models/Course.js";
+import Lecture from "../models/Lecture.js";
 import Progress from "../models/progress.js";
 import mongoose from "mongoose";
+
+export const saveEnrollmentDb = async (details) => {
+  try {
+    const enrollment = new Enrollment({
+      course: details.courseId,
+      user: details.userId,
+      isPaid: true,
+      paidAt: new Date(),
+      paymentMethod: details.paymentMethod,
+      paymentId: details.paymentId,
+    });
+
+    await enrollment.save();
+    const lectures = await Lecture.find({
+      course: enrollment.course,
+    });
+
+    // Create a new progress record for the user
+    const progress = new Progress({
+      studentId: enrollment.user,
+      courseId: enrollment.course,
+      totalLectures: lectures.length,
+    });
+
+    await progress.save();
+
+    return enrollment;
+  } catch (error) {
+    console.error("Error saving enrollment:", error);
+    throw new Error("Failed to save enrollment");
+  }
+};
 
 // Create a new enrollment
 export const createEnrollment = async (req, res) => {
@@ -32,8 +65,7 @@ export const createEnrollment = async (req, res) => {
         .json({ message: "User is already enrolled in this course" });
     }
 
-    // For now, automatically mark as paid regardless of course price
-    const enrollment = new Enrollment({
+    const enrolled = await saveEnrollmentDb({
       course: courseId,
       user: userId,
       isPaid: true,
@@ -42,22 +74,9 @@ export const createEnrollment = async (req, res) => {
       paymentId: `PAY-${Math.random().toString(36).substring(2, 15)}`, // Generate a random payment ID
     });
 
-    await enrollment.save();
-
-    // create a new progress record
-    const progress = new Progress({
-      studentId: userId,
-      courseId,
-      totalLectures: course.lectures.length,
-    });
-
-    await progress.save();
-
-    console.log();
-
     res.status(201).json({
       message: "Enrollment successful",
-      enrollment,
+      enrollment: enrolled,
     });
   } catch (error) {
     console.error("Error creating enrollment:", error);

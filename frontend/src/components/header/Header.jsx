@@ -33,6 +33,7 @@ const Header = () => {
         {/* {userRole === "student" && (
           <Link to="/student-dashboard">Student Dashboard</Link>
         )} */}
+        {isAuth && <Link to="/chat">Chat</Link>}
         {userRole === "admin" && (
           <Link to="/admin/dashboard">Admin Dashboard</Link>
         )}
