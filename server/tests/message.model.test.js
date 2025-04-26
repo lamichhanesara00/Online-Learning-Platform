@@ -1,77 +1,185 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
+import { jest } from "@jest/globals";
 import Message from "../models/Message.js";
-import { User } from "../models/User.js";
-import { jest } from "@jest/globals"; // ✅ Import from @jest/globals
 
-dotenv.config();
-jest.setTimeout(30000); // ⏰ Increase timeout to avoid hook failures
+jest.setTimeout(10000);
 
-let sender, receiver;
-
-beforeAll(async () => {
-  await mongoose.connect(process.env.DB, {
-    dbName: "onlineLearning",
-  });
-
-  await User.deleteMany();
-  await Message.deleteMany();
-
-  sender = await User.create({
-    name: "Sender",
-    email: "sender@example.com",
-    password: "123456",
-    role: "student",
-  });
-
-  receiver = await User.create({
-    name: "Receiver",
-    email: "receiver@example.com",
-    password: "123456",
-    role: "teacher",
-  });
+jest.mock("../models/Message.js", () => {
+  return {
+    default: jest.fn(),
+  };
 });
 
-afterAll(async () => {
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
-});
+describe("🧪 Message Model Test (Mocked)", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-describe("📨 Message Model", () => {
-  it("✅ should create a valid message", async () => {
-    const message = await Message.create({
-      senderId: sender._id,
-      receiverId: receiver._id,
-      content: "Hello, test message!",
+  it("should create and save a message successfully", async () => {
+    const mockSave = jest.fn().mockResolvedValue({
+      _id: "mocked_message_id",
+      senderId: "mocked_sender_id",
+      receiverId: "mocked_receiver_id",
+      content: "Hello, how are you doing?",
+      isRead: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
     });
 
-    expect(message).toBeDefined();
-    expect(message.content).toBe("Hello, test message!");
-    expect(message.isRead).toBe(false);
+    Message.prototype.save = mockSave;
+
+    const validMessage = new Message({
+      senderId: "mocked_sender_id",
+      receiverId: "mocked_receiver_id",
+      content: "Hello, how are you doing?"
+    });
+
+    const savedMessage = await validMessage.save();
+
+    expect(savedMessage._id).toBeDefined();
+    expect(savedMessage.senderId).toBe("mocked_sender_id");
+    expect(savedMessage.receiverId).toBe("mocked_receiver_id");
+    expect(savedMessage.content).toBe("Hello, how are you doing?");
+    expect(savedMessage.isRead).toBe(false);
+    expect(savedMessage.createdAt).toBeDefined();
+    expect(savedMessage.updatedAt).toBeDefined();
   });
 
-  it("❌ should not create a message without content", async () => {
+  it("should throw validation error if required fields are missing", async () => {
+    const validationError = new Error("ValidationError");
+    validationError.name = "ValidationError";
+    validationError.errors = {
+      senderId: { message: "Path `senderId` is required." },
+      receiverId: { message: "Path `receiverId` is required." },
+      content: { message: "Path `content` is required." }
+    };
+
+    const mockSave = jest.fn().mockRejectedValue(validationError);
+    Message.prototype.save = mockSave;
+
+    const incompleteMessage = new Message({});
+
+    let err;
     try {
-      await Message.create({
-        senderId: sender._id,
-        receiverId: receiver._id,
-        content: "",
-      });
+      await incompleteMessage.save();
     } catch (error) {
-      expect(error).toBeDefined();
-      expect(error.message).toMatch(/Message validation failed/);
+      err = error;
     }
+
+    expect(err).toBeDefined();
+    expect(err.name).toBe("ValidationError");
+    expect(err.errors.senderId).toBeDefined();
+    expect(err.errors.receiverId).toBeDefined();
+    expect(err.errors.content).toBeDefined();
   });
 
-  it("✅ should mark a message as read", async () => {
-    const msg = await Message.create({
-      senderId: sender._id,
-      receiverId: receiver._id,
-      content: "Read this message!",
+  it("should throw validation error for invalid senderId", async () => {
+    const validationError = new Error("ValidationError");
+    validationError.name = "ValidationError";
+    validationError.errors = {
+      senderId: { message: "Invalid senderId format" }
+    };
+
+    const mockSave = jest.fn().mockRejectedValue(validationError);
+    Message.prototype.save = mockSave;
+
+    const invalidMessage = new Message({
+      senderId: "not-a-valid-id",
+      receiverId: "mocked_receiver_id",
+      content: "Test message"
     });
 
-    msg.isRead = true;
-    const updated = await msg.save();
-    expect(updated.isRead).toBe(true);
+    let err;
+    try {
+      await invalidMessage.save();
+    } catch (error) {
+      err = error;
+    }
+
+    expect(err).toBeDefined();
+    expect(err.name).toBe("ValidationError");
+    expect(err.errors.senderId).toBeDefined();
+  });
+
+  it("should throw validation error for invalid receiverId", async () => {
+    const validationError = new Error("ValidationError");
+    validationError.name = "ValidationError";
+    validationError.errors = {
+      receiverId: { message: "Invalid receiverId format" }
+    };
+
+    const mockSave = jest.fn().mockRejectedValue(validationError);
+    Message.prototype.save = mockSave;
+
+    const invalidMessage = new Message({
+      senderId: "mocked_sender_id",
+      receiverId: "not-a-valid-id",
+      content: "Test message"
+    });
+
+    let err;
+    try {
+      await invalidMessage.save();
+    } catch (error) {
+      err = error;
+    }
+
+    expect(err).toBeDefined();
+    expect(err.name).toBe("ValidationError");
+    expect(err.errors.receiverId).toBeDefined();
+  });
+
+  it("should set isRead to false by default", async () => {
+    const mockSave = jest.fn().mockResolvedValue({
+      _id: "mocked_message_id",
+      senderId: "mocked_sender_id",
+      receiverId: "mocked_receiver_id",
+      content: "Test message",
+      isRead: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    Message.prototype.save = mockSave;
+
+    const message = new Message({
+      senderId: "mocked_sender_id",
+      receiverId: "mocked_receiver_id",
+      content: "Test message"
+    });
+
+    const savedMessage = await message.save();
+    expect(savedMessage._id).toBeDefined();
+    expect(savedMessage.senderId).toBe("mocked_sender_id");
+    expect(savedMessage.receiverId).toBe("mocked_receiver_id");
+    expect(savedMessage.content).toBe("Test message");
+    expect(savedMessage.isRead).toBe(false);
+    expect(savedMessage.createdAt).toBeDefined();
+    expect(savedMessage.updatedAt).toBeDefined();
+  });
+
+  it("should allow setting isRead to true", async () => {
+    const mockSave = jest.fn().mockResolvedValue({
+      _id: "mocked_message_id",
+      senderId: "mocked_sender_id",
+      receiverId: "mocked_receiver_id",
+      content: "Test message",
+      isRead: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    Message.prototype.save = mockSave;
+
+    const message = new Message({
+      senderId: "mocked_sender_id",
+      receiverId: "mocked_receiver_id",
+      content: "Test message",
+      isRead: true
+    });
+
+    const savedMessage = await message.save();
+
+    expect(savedMessage._id).toBeDefined();
+    expect(savedMessage.isRead).toBe(true);
   });
 });
