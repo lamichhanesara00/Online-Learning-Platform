@@ -13,8 +13,6 @@ export const createCourse = async (req, res) => {
     const { title, description, price, instructor, category, duration } =
       req.body;
 
-    console.log("Create new course:", req.body);
-
     // Validate fields
     if (
       !title ||
@@ -72,11 +70,9 @@ export const createCourse = async (req, res) => {
 export const addLectures = async (req, res) => {
   try {
     const courseId = req.params.id;
-    console.log("🚀 ~ addLectures ~ courseId:", courseId);
 
     // 1) Find the course by ID
     const course = await Course.findById(courseId);
-    console.log("🚀 ~ addLectures ~ course:", course);
     if (!course) {
       return res.status(404).json({ message: "No course with this id" });
     }
@@ -109,7 +105,6 @@ export const addLectures = async (req, res) => {
       course,
     });
   } catch (error) {
-    console.error("Error adding lectures:", error);
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });
@@ -127,7 +122,6 @@ export const getUsers = async (req, res) => {
 
     return res.status(200).json([...users, ...admins]);
   } catch (error) {
-    console.error("Error fetching users:", error);
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });
@@ -140,7 +134,6 @@ export const getUsers = async (req, res) => {
  */
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
-  console.log("Deleting user:", id);
 
   try {
     const deletedUser = await User.findByIdAndDelete(id);
@@ -149,7 +142,6 @@ export const deleteUser = async (req, res) => {
     }
     return res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    console.error("Error deleting user:", error);
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });

@@ -5,8 +5,9 @@ import Progress from "../models/progress.js";
 import mongoose from "mongoose";
 
 export const saveEnrollmentDb = async (details) => {
+  console.log(details);
   try {
-    const enrollment = new Enrollment({
+    const enrollment = await Enrollment.create({
       course: details.courseId,
       user: details.userId,
       isPaid: true,
@@ -15,31 +16,30 @@ export const saveEnrollmentDb = async (details) => {
       paymentId: details.paymentId,
     });
 
-    await enrollment.save();
+    console.log({
+      enrollment
+    })
+
     const lectures = await Lecture.find({
       course: enrollment.course,
     });
 
     // Create a new progress record for the user
-    const progress = new Progress({
+    const progress = await Progress.create({
       studentId: enrollment.user,
       courseId: enrollment.course,
       totalLectures: lectures.length,
     });
 
-    await progress.save();
-
-    return enrollment;
+    return { enrollment };
   } catch (error) {
-    console.error("Error saving enrollment:", error);
     throw new Error("Failed to save enrollment");
   }
 };
 
-// Create a new enrollment
 export const createEnrollment = async (req, res) => {
   try {
-    const { courseId, userId } = req.body;
+    const { course: courseId, user: userId, paymentMethod, paymentId } = req.body;
 
     if (!courseId || !userId) {
       return res
@@ -66,12 +66,12 @@ export const createEnrollment = async (req, res) => {
     }
 
     const enrolled = await saveEnrollmentDb({
-      course: courseId,
-      user: userId,
+      courseId,
+      userId,
       isPaid: true,
       paidAt: new Date(),
-      paymentMethod: "direct", // Default payment method
-      paymentId: `PAY-${Math.random().toString(36).substring(2, 15)}`, // Generate a random payment ID
+      paymentMethod: paymentMethod || "direct",
+      paymentId: paymentId || `PAY-${Math.random().toString(36).substring(2, 15)}`,
     });
 
     res.status(201).json({
@@ -79,7 +79,6 @@ export const createEnrollment = async (req, res) => {
       enrollment: enrolled,
     });
   } catch (error) {
-    console.error("Error creating enrollment:", error);
     res.status(500).json({
       message: "Failed to enroll in the course",
       error: error.message,
@@ -87,7 +86,6 @@ export const createEnrollment = async (req, res) => {
   }
 };
 
-// Get all enrollments for a user
 export const getUserEnrollments = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -117,7 +115,6 @@ export const getUserEnrollments = async (req, res) => {
   }
 };
 
-// Get enrollment details by ID
 export const getEnrollmentById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -150,7 +147,6 @@ export const getEnrollmentById = async (req, res) => {
   }
 };
 
-// Check if a user is enrolled in a specific course
 export const checkEnrollment = async (req, res) => {
   try {
     const { userId, courseId } = req.params;
@@ -179,7 +175,6 @@ export const checkEnrollment = async (req, res) => {
   }
 };
 
-// Get all courses with progress for a user
 export const getUserCoursesWithProgress = async (req, res) => {
   try {
     const { userId } = req.params;

@@ -176,10 +176,11 @@ export const updateStudentProgress = async (req, res) => {
       }
     }
 
+
     await progress.save();
 
     // Get course to calculate progress percentage
-    const course = await Course.findById(courseId);
+    const course = await Course.findById(courseId).populate("lectures");
     const totalLectures = course.lectures.length;
     const progressPercentage =
       totalLectures > 0
@@ -208,8 +209,6 @@ export const getStudentAllProgress = async (req, res) => {
   try {
     const { studentId } = req.params;
 
-    console.log("Fetching progress for student:", studentId);
-
     const progressRecords = await Progress.find({ studentId })
       .populate({
         path: "courseId",
@@ -221,8 +220,6 @@ export const getStudentAllProgress = async (req, res) => {
       })
       .populate("completedLectures", "_id title")
       .populate("lastAccessedLecture", "_id title");
-
-    console.log("Progress records:", progressRecords);
 
     const coursesWithProgress = progressRecords.map((record) => {
       const course = record.courseId;

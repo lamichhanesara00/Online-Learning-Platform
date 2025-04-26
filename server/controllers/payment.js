@@ -81,10 +81,15 @@ const initiateKhaltiPayment = async (req, res) => {
       formData,
       {
         headers: {
-          Authorization: `key ${khaltiKey}`,
+          Authorization: `key ${process.env.KHALTI_KEY}`,
         },
+        validateStatus: (status) => status >= 200 && status < 300
       }
     );
+
+    if (!khaltiResponse || !khaltiResponse.payment_url) {
+      throw new Error('Invalid response from Khalti');
+    }
 
     await Payment.updateOne(
       { _id: payment._id },
@@ -229,11 +234,6 @@ const verifyKhaltiPayment = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.error(
-      "Khalti payment verification error:",
-      error.response?.data || error.message
-    );
-
     await Payment.updateOne(
       { _id: payment._id },
       {

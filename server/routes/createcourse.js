@@ -65,7 +65,6 @@ router.post("/:id/lecture", async (req, res) => {
       course,
     });
   } catch (error) {
-    console.error("Error adding lectures:", error);
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });

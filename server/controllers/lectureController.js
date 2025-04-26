@@ -19,6 +19,7 @@ export const getLectureById = async (req, res) => {
   try {
     const { id } = req.params;
     const lecture = await Lecture.findById(id).populate("course");
+    console.log(lecture);
     if (!lecture) return res.status(404).json({ message: "Lecture not found" });
 
     res.status(200).json(lecture);
@@ -51,6 +52,7 @@ export const updateLecture = async (req, res) => {
 
     res.status(200).json(updatedLecture);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Failed to update lecture" });
   }
 };
@@ -60,13 +62,14 @@ export const deleteLecture = async (req, res) => {
   try {
     const { id } = req.params;
     const lecture = await Lecture.findById(id);
-    const course = await Course.findById(lecture.course);
 
     if (!lecture) return res.status(404).json({ message: "Lecture not found" });
-    const deletedLecture = await Lecture.findByIdAndDelete(id);
 
-    if (!deletedLecture)
-      return res.status(404).json({ message: "Lecture not found" });
+    const course = await Course.findById(lecture.course);
+    if (!course) return res.status(404).json({ message: "Course not found" });
+
+    const deletedLecture = await Lecture.findByIdAndDelete(id);
+    if (!deletedLecture) return res.status(404).json({ message: "Lecture not found" });
 
     // remove lecture reference from course
     course.lectures.pull(id);
